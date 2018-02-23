@@ -1,9 +1,9 @@
 #include <iostream>
-#include "Map.hpp"
+#include "Client.hpp"
 
 int main() {
     std::cout << "Hello, World! [BOOM]" << std::endl;
-    Map base(15, 7);
-    std::cout << base;
+    Client client;
+    client.run();
     return 0;
 }

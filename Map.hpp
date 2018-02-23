@@ -14,8 +14,12 @@ public:
 
     Map(const unsigned int width, const unsigned int height);
 
-    const Tile &operator()(const unsigned int &x, const unsigned int &y);
+    const Tile &operator()(const unsigned int &x, const unsigned int &y) const;
     friend std::ostream &operator<<(std::ostream &stream, const Map &map);
+
+    const unsigned int getWidth() const;
+
+    const unsigned int getHeight() const;
 
 private:
     const unsigned int width, height;

@@ -4,7 +4,7 @@
 
 #include "Map.hpp"
 
-const Tile &Map::operator()(const unsigned int &x, const unsigned int &y) {
+const Tile &Map::operator()(const unsigned int &x, const unsigned int &y) const {
     return tiles[x][y];
 }
 
@@ -29,4 +29,12 @@ std::ostream &operator<<(std::ostream &stream, const Map &map) {
         stream << std::endl;
     }
     return stream;
+}
+
+const unsigned int Map::getWidth() const {
+    return width;
+}
+
+const unsigned int Map::getHeight() const {
+    return height;
 }
