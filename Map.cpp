@@ -8,7 +8,11 @@ const Tile &Map::operator()(const unsigned int &x, const unsigned int &y) const 
     return tiles[x][y];
 }
 
-Map::Map(const unsigned int width, const unsigned int height) :
+const Tile &Map::operator()(const sf::Vector2u &pos) const {
+    return tiles[pos.x][pos.y];
+}
+
+Map::Map(const unsigned int &width, const unsigned int &height) :
         width(width), height(height),
         tiles(width, std::vector<Tile>(height, VOID))
 {

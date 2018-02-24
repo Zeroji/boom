@@ -3,7 +3,7 @@ project(boom)
 
 set(CMAKE_CXX_STANDARD 11)
 
-set(SOURCE_FILES main.cpp Map.cpp Map.hpp Tile.cpp Tile.hpp Engine.cpp Engine.hpp Client.cpp Client.hpp Renderer.cpp Renderer.hpp)
+set(SOURCE_FILES main.cpp Map.cpp Map.hpp Tile.cpp Tile.hpp Engine.cpp Engine.hpp Client.cpp Client.hpp Renderer.cpp Renderer.hpp Entity.cpp Entity.hpp)
 add_executable(boom ${SOURCE_FILES})
 target_link_libraries(boom sfml-graphics sfml-window sfml-system)
 

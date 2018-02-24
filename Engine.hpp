@@ -12,10 +12,15 @@ class Engine {
 public:
     Engine();
 
+    const Map &getMap() const;
+
+    inline bool isBlocking(sf::Vector2u &pos) const { return tile::isBlocking(map(pos)); }
+    inline bool isSurface(sf::Vector2u &pos) const { return tile::isSurface(map(pos)); }
+
+    bool isValid(const sf::Vector2u &entityPos) const;
+
 private:
     Map map;
-public:
-    const Map &getMap() const;
 };
 
 
