@@ -24,6 +24,11 @@ Map::Map(const unsigned int &width, const unsigned int &height) :
         tiles[0][j] = WALL;
         tiles[width-1][j] = WALL;
     }
+
+    for(int i = 2; i < width; i += 4)
+        for(int j = 2; j < height; j += 4)
+            if(tiles[i][j] == VOID)
+                tiles[i][j] = BLOCK;
 }
 
 std::ostream &operator<<(std::ostream &stream, const Map &map) {

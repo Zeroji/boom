@@ -8,6 +8,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "Engine.hpp"
+#include "Player.hpp"
 
 /**
  * Draws the state of a game engine to a window
@@ -20,9 +21,12 @@ public:
     void resize(unsigned int width, unsigned int height);
 
 private:
+    static const std::vector<sf::Color> defaultColors;
     const unsigned int tileSize = 16;
     sf::Texture tileSet;
     sf::VertexArray vertices;
+    sf::Texture playerTex;
+    sf::Sprite playerSpr;
 
     Engine *engine;
     const Map &map;

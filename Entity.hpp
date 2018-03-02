@@ -4,19 +4,37 @@
 
 #ifndef BOOM_ENTITY_HPP
 #define BOOM_ENTITY_HPP
-class Engine;
 
-#include "Engine.hpp"
 #include <SFML/System.hpp>
 
 class Entity {
 public:
-    Entity(const Engine *engine, const sf::Vector2u &pos);
+    explicit Entity(const sf::Vector2u &pos);
+
     void moveTo(sf::Vector2u newPos);
 
+    /**
+     * Update the internal clock (time since last move)
+     * @param elapsed Elapsed time
+     */
+    void updateClock(sf::Time elapsed);
+
+    /**
+     * Return entity real position
+     * @return Entity position
+     */
+    const sf::Vector2u &getPos() const;
+
+    /**
+     * Return entity interpolated position (same domain)
+     * @return Entity interpolated position (or real if not moving)
+     */
+    sf::Vector2f getIPos() const;
+
 public:
-    const Engine *engine;
-    sf::Vector2u pos;
+    sf::Vector2u old, pos;
+    sf::Time speed;
+    sf::Time cooldown;
 };
 
 

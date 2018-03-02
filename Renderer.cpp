@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include "Renderer.hpp"
+#include "Player.hpp"
 
 Renderer::Renderer(Engine *engine, sf::RenderWindow *window) :
         engine(engine), window(window), map(engine->getMap()),
@@ -26,7 +27,20 @@ Renderer::Renderer(Engine *engine, sf::RenderWindow *window) :
             vertices[i+3].position = sf::Vector2f(x  , y+1);
         }
     }
+
+    // Initialize player view
+    playerTex.loadFromFile("res/player.png");
+    playerSpr.setTexture(playerTex);
+    const sf::Vector2f pTSize(playerTex.getSize());
+    playerSpr.setScale(1 / pTSize.x, 1 / pTSize.y);
+    playerSpr.setOrigin(pTSize / 2.f);
+
 }
+
+// Some default colors for players. Useful to differentiate.
+const std::vector<sf::Color> Renderer::defaultColors = {
+        sf::Color::Blue, sf::Color::Magenta, sf::Color::Green, sf::Color::Red, sf::Color::Cyan
+};
 
 void Renderer::render() {
     window->setView(gameView);
@@ -44,6 +58,14 @@ void Renderer::render() {
     }
 
     window->draw(vertices, &tileSet);
+
+    for(const Player &p: engine->getPlayers()) {
+        playerSpr.setColor(defaultColors[p.id]);
+        // Add 1, 1 to account for origin translation, divide to account for half tiles
+        playerSpr.setPosition((p.getIPos() + sf::Vector2f(1, 1)) / 2.f);
+        playerSpr.setRotation(p.facing * 90.f);
+        window->draw(playerSpr);
+    }
 }
 
 /**
