@@ -5,14 +5,8 @@
 #include <iostream>
 #include "Client.hpp"
 
-Client::Client() : window(sf::VideoMode(800, 544), "BOOM"), renderer(&engine, &window), engine(25, 17, 5) {
+Client::Client() : window(sf::VideoMode(800, 544), "BOOM"), renderer(&engine, &window), engine(25, 17, 5), handlers(this) {
     window.setKeyRepeatEnabled(false);
-    // Manually adding InputHandlers for various players
-    handlers.emplace_back(new InputHandler(this));
-    handlers.emplace_back(new InputHandler(this));
-    handlers.emplace_back(new InputHandler(this));
-    handlers.emplace_back(new InputHandler(this, 0));
-    handlers.emplace_back(new InputHandler(this, 1));
 }
 
 void Client::run() {
@@ -36,8 +30,7 @@ void Client::processEvent(sf::Event &event) {
             renderer.resize(event.size.width, event.size.height);
             break;
         default:
-            for(auto &handler: handlers)
-                handler->dispatch(event);
+            handlers.dispatch(event);
             break;
     }
 }

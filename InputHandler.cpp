@@ -76,7 +76,6 @@ Input &Input::operator=(Input input) {
 }
 
 unsigned int InputHandler::newUid = 0;
-unsigned int InputHandler::keyUid = 0;
 
 const std::vector<std::vector<std::pair<Control, sf::Keyboard::Key>>> InputHandler::defaultKeyBindings = {{
                     {Control::Down, sf::Keyboard::Key::S},
@@ -103,12 +102,15 @@ const std::vector<std::vector<std::pair<Control, sf::Keyboard::Key>>> InputHandl
                     {Control::B, sf::Keyboard::Key::Numpad9}
         }};
 
-InputHandler::InputHandler(Client *client) : client(client), uid(newUid++) {
-    for(auto &pair : defaultKeyBindings[keyUid++])
+InputHandler::InputHandler(Client *client, const unsigned int &uid, const bool &isKeyboard, const unsigned int &deviceId) :
+        client(client), uid(uid), isKeyboard(isKeyboard), deviceId(deviceId) {}
+
+KeyboardHandler::KeyboardHandler(Client *client, const unsigned int &bindingsId) : InputHandler(client, newUid++, true, bindingsId) {
+    for(auto &pair : defaultKeyBindings[bindingsId])
         mapping.emplace_back(std::pair<Control, Input>(pair.first, Input(pair.second)));
 }
 
-InputHandler::InputHandler(Client *client, const unsigned int &joystickId) : client(client), uid(newUid++) {
+JoystickHandler::JoystickHandler(Client *client, const unsigned int &joystickId) : InputHandler(client, newUid++, false, joystickId) {
     mapping.emplace_back(std::pair<Control, Input>(Control::Down, Input(joystickId, sf::Joystick::Axis::Y, true)));
     mapping.emplace_back(std::pair<Control, Input>(Control::Up, Input(joystickId, sf::Joystick::Axis::Y, false)));
     mapping.emplace_back(std::pair<Control, Input>(Control::Right, Input(joystickId, sf::Joystick::Axis::X, true)));
@@ -133,4 +135,57 @@ bool InputHandler::dispatch(const sf::Event &event) {
         }
     }
     return processed;
+}
+
+InputHandlerArray::InputHandlerArray(Client *client) : client(client) {}
+
+void InputHandlerArray::setAutoAdd(bool autoAdd) {
+    InputHandlerArray::autoAdd = autoAdd;
+}
+
+bool InputHandlerArray::dispatch(const sf::Event &event) {
+    bool processed = false;
+    for (auto &handler : *this) {
+        if(handler->dispatch(event))
+            processed = true;
+    }
+    if(!processed && autoAdd) {
+        switch (event.type) {
+            case sf::Event::JoystickConnected:
+                processed = newJoystick(event.joystickConnect.joystickId);
+                break;
+            case sf::Event::JoystickButtonPressed:
+                processed = newJoystick(event.joystickButton.joystickId);
+                break;
+            case sf::Event::KeyPressed:
+                processed = newKeyboard(event.key.code);
+                break;
+            default:
+                break;
+        }
+    }
+    return processed;
+}
+
+bool InputHandlerArray::newJoystick(const unsigned int &joystickId) {
+    for (auto &handler : *this)
+        if(!handler->isKeyboard && handler->deviceId == joystickId)
+            return false;
+    emplace_back(new JoystickHandler(client, joystickId));
+    return true;
+}
+
+bool InputHandlerArray::newKeyboard(const sf::Keyboard::Key &code) {
+    for (unsigned int i = 0; i < InputHandler::defaultKeyBindings.size(); ++i) {
+        for (auto &handler : *this)
+            if(handler->isKeyboard && handler->deviceId == i)
+                continue;
+        for (auto &pair : InputHandler::defaultKeyBindings[i]) {
+            if(pair.second == code) {
+                emplace_back(new KeyboardHandler(client, i));
+                return true;
+            }
+        }
+    }
+    return false;
 }

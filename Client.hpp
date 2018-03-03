@@ -26,7 +26,7 @@ public:
     void render();
 
 private:
-    std::vector<std::unique_ptr<InputHandler>> handlers;
+    InputHandlerArray handlers;
     Engine engine;
     Renderer renderer;
     sf::RenderWindow window;

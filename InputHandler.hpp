@@ -94,17 +94,47 @@ private:
 class InputHandler {
 public:
     /**
-     * Construct from a keyboard input layout
-     * Additional handlers will have pre-mapped keybinds, possibly limited
+     * Process an SFML event and dispatch to client if necessary
+     * @param event The event to process
+     * @return true if anything was dispatched
      */
-    explicit InputHandler(Client*);
+    bool dispatch(const sf::Event &event);
 
-    /**
-     * Construct from a joystick input layout
-     * Note than SFML only handles 8 joystick
-     * @param joystickId The ID of the joystick to use
-     */
-    explicit InputHandler(Client*, const unsigned int &joystickId);
+    const bool isKeyboard;
+    const unsigned int deviceId;
+    const unsigned int uid;
+
+    static const std::vector<std::vector<std::pair<Control, sf::Keyboard::Key>>> defaultKeyBindings;
+protected:
+    InputHandler(Client *client, const unsigned int &uid, const bool &isKeyboard, const unsigned int &deviceId);
+    std::vector<Control> controls;
+    static unsigned int newUid;
+    Client *client;
+
+    std::vector<std::pair<Control, Input>> mapping;
+};
+
+/**
+ * Construct from a keyboard input layout
+ * Additional handlers will have pre-mapped keybinds, possibly limited
+ */
+class KeyboardHandler : public InputHandler {
+public:
+    KeyboardHandler(Client *client, const unsigned int &bindingsId);
+};
+
+/**
+ * Construct from a joystick input layout
+ * Note than SFML only handles 8 joystick
+ */
+class JoystickHandler : public InputHandler {
+public:
+    JoystickHandler(Client *client, const unsigned int &joystickId);
+};
+
+class InputHandlerArray : public std::vector<std::unique_ptr<InputHandler>> {
+public:
+    explicit InputHandlerArray(Client *client);
 
     /**
      * Process an SFML event and dispatch to client if necessary
@@ -113,15 +143,14 @@ public:
      */
     bool dispatch(const sf::Event &event);
 
-private:
-    std::vector<Control> controls;
-    static unsigned int newUid;
-    static unsigned int keyUid;
-    static const std::vector<std::vector<std::pair<Control, sf::Keyboard::Key>>> defaultKeyBindings;
-    const unsigned int uid;
-    Client *client;
+    void setAutoAdd(bool autoAdd);
 
-    std::vector<std::pair<Control, Input>> mapping;
+private:
+    Client *client;
+    bool autoAdd = true;
+
+    bool newJoystick(const unsigned int &joystickId);
+    bool newKeyboard(const sf::Keyboard::Key &code);
 };
 
 #endif //BOOM_INPUTHANDLER_HPP
