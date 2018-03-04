@@ -13,6 +13,7 @@ std::ostream &operator<<(std::ostream &stream, const Control &control) {
         case Control::Right: stream << ">"; break;
         case Control::A: stream << "A"; break;
         case Control::B: stream << "B"; break;
+        case Control::Start: stream << "S"; break;
     }
     return stream;
 }

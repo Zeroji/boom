@@ -76,28 +76,39 @@ Input &Input::operator=(Input input) {
 }
 
 const std::vector<std::vector<std::pair<Control, sf::Keyboard::Key>>> InputHandler::defaultKeyBindings = {{
-                    {Control::Down, sf::Keyboard::Key::S},
                     {Control::Up, sf::Keyboard::Key::W},
                     {Control::Up, sf::Keyboard::Key::Z},
-                    {Control::Left, sf::Keyboard::Key::Q},
                     {Control::Left, sf::Keyboard::Key::A},
+                    {Control::Left, sf::Keyboard::Key::Q},
+                    {Control::Down, sf::Keyboard::Key::S},
                     {Control::Right, sf::Keyboard::Key::D},
                     {Control::A, sf::Keyboard::Key::Space},
-                    {Control::B, sf::Keyboard::Key::Tab}
+                    {Control::B, sf::Keyboard::Key::Tab},
+                    {Control::Start, sf::Keyboard::Key::T}
         }, {
                     {Control::Down, sf::Keyboard::Key::Down},
-                    {Control::Up, sf::Keyboard::Key::Up},
                     {Control::Left, sf::Keyboard::Key::Left},
+                    {Control::Up, sf::Keyboard::Key::Up},
                     {Control::Right, sf::Keyboard::Key::Right},
                     {Control::A, sf::Keyboard::Key::RShift},
-                    {Control::B, sf::Keyboard::Key::RControl}
+                    {Control::B, sf::Keyboard::Key::RControl},
+                    {Control::Start, sf::Keyboard::Key::Return}
         }, {
-                    {Control::Down, sf::Keyboard::Key::Numpad2},
                     {Control::Up, sf::Keyboard::Key::Numpad8},
                     {Control::Left, sf::Keyboard::Key::Numpad4},
+                    {Control::Down, sf::Keyboard::Key::Numpad2},
                     {Control::Right, sf::Keyboard::Key::Numpad6},
                     {Control::A, sf::Keyboard::Key::Numpad7},
-                    {Control::B, sf::Keyboard::Key::Numpad9}
+                    {Control::B, sf::Keyboard::Key::Numpad9},
+                    {Control::Start, sf::Keyboard::Key::Numpad0}
+        }, {
+                    {Control::Up, sf::Keyboard::Key::I},
+                    {Control::Left, sf::Keyboard::Key::J},
+                    {Control::Down, sf::Keyboard::Key::K},
+                    {Control::Right, sf::Keyboard::Key::L},
+                    {Control::A, sf::Keyboard::Key::U},
+                    {Control::B, sf::Keyboard::Key::O},
+                    {Control::Start, sf::Keyboard::Key::M}
         }};
 
 InputHandler::InputHandler(Client *client, const unsigned int &uid, const bool &isKeyboard, const unsigned int &deviceId) :
@@ -109,12 +120,13 @@ KeyboardHandler::KeyboardHandler(Client *client, const unsigned int &uid, const 
 }
 
 JoystickHandler::JoystickHandler(Client *client, const unsigned int &uid, const unsigned int &joystickId) : InputHandler(client, uid, false, joystickId) {
-    mapping.emplace_back(std::pair<Control, Input>(Control::Down, Input(joystickId, sf::Joystick::Axis::Y, true)));
     mapping.emplace_back(std::pair<Control, Input>(Control::Up, Input(joystickId, sf::Joystick::Axis::Y, false)));
-    mapping.emplace_back(std::pair<Control, Input>(Control::Right, Input(joystickId, sf::Joystick::Axis::X, true)));
     mapping.emplace_back(std::pair<Control, Input>(Control::Left, Input(joystickId, sf::Joystick::Axis::X, false)));
+    mapping.emplace_back(std::pair<Control, Input>(Control::Down, Input(joystickId, sf::Joystick::Axis::Y, true)));
+    mapping.emplace_back(std::pair<Control, Input>(Control::Right, Input(joystickId, sf::Joystick::Axis::X, true)));
     mapping.emplace_back(std::pair<Control, Input>(Control::A, Input(joystickId, 0u)));
     mapping.emplace_back(std::pair<Control, Input>(Control::B, Input(joystickId, 1u)));
+    mapping.emplace_back(std::pair<Control, Input>(Control::Start, Input(joystickId, 7u)));
 }
 
 bool InputHandler::dispatch(const sf::Event &event) {

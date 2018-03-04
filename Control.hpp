@@ -12,7 +12,7 @@
  */
 enum class Control : int8_t {
     Up, Down, Left, Right,
-    A, B
+    A, B, Start
 };
 
 namespace control {
