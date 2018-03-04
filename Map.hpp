@@ -24,7 +24,7 @@ public:
     const unsigned int getHeight() const;
 
 private:
-    const unsigned int width, height;
+    unsigned int width, height;
     std::vector<std::vector<Tile>> tiles;
 };
 

@@ -12,6 +12,10 @@
 
 enum class Control : int8_t;
 
+enum class State : int8_t {
+    TITLE, GAME
+};
+
 /**
  * Handles the entire application, including starting games,
  * managing the window, or calling the engine / renderer
@@ -27,10 +31,18 @@ public:
     void render();
 
 private:
+    void startGame();
+
+    State state = State::TITLE;
     InputHandlerArray handlers;
+    std::map<unsigned int, unsigned int> inputMapper;
     Engine engine;
     Renderer renderer;
     sf::RenderWindow window;
+
+    // Render related
+    sf::Font font;
+    sf::Text playerCount;
 };
 
 

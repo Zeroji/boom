@@ -33,7 +33,7 @@ public:
 
 private:
     Map map;
-    const unsigned int playerCount;
+    unsigned int playerCount;
     std::vector<Player> players;
 };
 
