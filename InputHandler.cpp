@@ -75,8 +75,6 @@ Input &Input::operator=(Input input) {
     return *this;
 }
 
-unsigned int InputHandler::newUid = 0;
-
 const std::vector<std::vector<std::pair<Control, sf::Keyboard::Key>>> InputHandler::defaultKeyBindings = {{
                     {Control::Down, sf::Keyboard::Key::S},
                     {Control::Up, sf::Keyboard::Key::W},
@@ -105,12 +103,12 @@ const std::vector<std::vector<std::pair<Control, sf::Keyboard::Key>>> InputHandl
 InputHandler::InputHandler(Client *client, const unsigned int &uid, const bool &isKeyboard, const unsigned int &deviceId) :
         client(client), uid(uid), isKeyboard(isKeyboard), deviceId(deviceId) {}
 
-KeyboardHandler::KeyboardHandler(Client *client, const unsigned int &bindingsId) : InputHandler(client, newUid++, true, bindingsId) {
+KeyboardHandler::KeyboardHandler(Client *client, const unsigned int &uid, const unsigned int &bindingsId) : InputHandler(client, uid, true, bindingsId) {
     for(auto &pair : defaultKeyBindings[bindingsId])
         mapping.emplace_back(std::pair<Control, Input>(pair.first, Input(pair.second)));
 }
 
-JoystickHandler::JoystickHandler(Client *client, const unsigned int &joystickId) : InputHandler(client, newUid++, false, joystickId) {
+JoystickHandler::JoystickHandler(Client *client, const unsigned int &uid, const unsigned int &joystickId) : InputHandler(client, uid, false, joystickId) {
     mapping.emplace_back(std::pair<Control, Input>(Control::Down, Input(joystickId, sf::Joystick::Axis::Y, true)));
     mapping.emplace_back(std::pair<Control, Input>(Control::Up, Input(joystickId, sf::Joystick::Axis::Y, false)));
     mapping.emplace_back(std::pair<Control, Input>(Control::Right, Input(joystickId, sf::Joystick::Axis::X, true)));
@@ -146,7 +144,7 @@ void InputHandlerArray::setAutoAdd(bool autoAdd) {
 bool InputHandlerArray::dispatch(const sf::Event &event) {
     bool processed = false;
     for (auto &handler : *this) {
-        if(handler->dispatch(event))
+        if(handler && handler->dispatch(event))
             processed = true;
     }
     if(!processed && autoAdd) {
@@ -169,23 +167,53 @@ bool InputHandlerArray::dispatch(const sf::Event &event) {
 
 bool InputHandlerArray::newJoystick(const unsigned int &joystickId) {
     for (auto &handler : *this)
-        if(!handler->isKeyboard && handler->deviceId == joystickId)
+        if(handler && !handler->isKeyboard && handler->deviceId == joystickId)
             return false;
-    emplace_back(new JoystickHandler(client, joystickId));
-    return true;
+    return addHandler((std::unique_ptr<InputHandler>) new JoystickHandler(client, getNewId(), joystickId));
 }
 
 bool InputHandlerArray::newKeyboard(const sf::Keyboard::Key &code) {
     for (unsigned int i = 0; i < InputHandler::defaultKeyBindings.size(); ++i) {
         for (auto &handler : *this)
-            if(handler->isKeyboard && handler->deviceId == i)
+            if(handler && handler->isKeyboard && handler->deviceId == i)
                 continue;
         for (auto &pair : InputHandler::defaultKeyBindings[i]) {
-            if(pair.second == code) {
-                emplace_back(new KeyboardHandler(client, i));
-                return true;
-            }
+            if(pair.second == code)
+                return addHandler((std::unique_ptr<InputHandler>) new KeyboardHandler(client, getNewId(), i));
         }
     }
     return false;
+}
+
+unsigned int InputHandlerArray::getNewId() const {
+    for (unsigned int i = 0; i < size(); ++i) {
+        if (operator[](i) == nullptr)
+            return i;
+    }
+    return (unsigned int) size();
+}
+
+bool InputHandlerArray::addHandler(std::unique_ptr<InputHandler> handler) {
+    unsigned int index = handler->uid;
+    if(index >= size())
+        emplace_back(std::move(handler));
+    else
+        operator[](index) = std::move(handler);
+    client->addInput(index);
+    return true;
+}
+
+void InputHandlerArray::removeHandler(const unsigned int &index) {
+    if(index >= size()) return;
+    operator[](index) = nullptr;
+    while(back() == nullptr)
+        pop_back();
+}
+
+unsigned int InputHandlerArray::getCount() {
+    unsigned int count = 0;
+    for(auto &handler : *this)
+        if(handler)
+            ++count;
+    return count;
 }

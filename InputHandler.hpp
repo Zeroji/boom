@@ -108,7 +108,6 @@ public:
 protected:
     InputHandler(Client *client, const unsigned int &uid, const bool &isKeyboard, const unsigned int &deviceId);
     std::vector<Control> controls;
-    static unsigned int newUid;
     Client *client;
 
     std::vector<std::pair<Control, Input>> mapping;
@@ -120,7 +119,7 @@ protected:
  */
 class KeyboardHandler : public InputHandler {
 public:
-    KeyboardHandler(Client *client, const unsigned int &bindingsId);
+    KeyboardHandler(Client *client, const unsigned int &uid, const unsigned int &bindingsId);
 };
 
 /**
@@ -129,7 +128,7 @@ public:
  */
 class JoystickHandler : public InputHandler {
 public:
-    JoystickHandler(Client *client, const unsigned int &joystickId);
+    JoystickHandler(Client *client, const unsigned int &uid, const unsigned int &joystickId);
 };
 
 class InputHandlerArray : public std::vector<std::unique_ptr<InputHandler>> {
@@ -144,6 +143,8 @@ public:
     bool dispatch(const sf::Event &event);
 
     void setAutoAdd(bool autoAdd);
+    void removeHandler(const unsigned int &index);
+    unsigned int getCount();
 
 private:
     Client *client;
@@ -151,6 +152,8 @@ private:
 
     bool newJoystick(const unsigned int &joystickId);
     bool newKeyboard(const sf::Keyboard::Key &code);
+    unsigned int getNewId() const;
+    bool addHandler(std::unique_ptr<InputHandler> handler);
 };
 
 #endif //BOOM_INPUTHANDLER_HPP

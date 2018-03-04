@@ -23,6 +23,7 @@ public:
     void run();
     void processEvent(sf::Event &event);
     void processInput(const unsigned int &player, const Control &control, bool state, const std::vector<Control> &controls);
+    void addInput(const unsigned int &player);
     void render();
 
 private:

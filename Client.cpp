@@ -12,7 +12,7 @@ Client::Client() : window(sf::VideoMode(800, 544), "BOOM"), renderer(&engine, &w
 void Client::run() {
     sf::Clock clock;
     while(window.isOpen()) {
-        sf::Event event;
+        sf::Event event{};
         while(window.pollEvent(event)) {
             processEvent(event);
         }
@@ -43,4 +43,8 @@ void Client::render() {
 
 void Client::processInput(const unsigned int &player, const Control &control, bool state, const std::vector<Control> &controls) {
     engine.processInput(player, control, state, controls);
+}
+
+void Client::addInput(const unsigned int &player) {
+
 }
