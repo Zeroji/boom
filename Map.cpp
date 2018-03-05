@@ -25,8 +25,8 @@ Map::Map(const unsigned int &width, const unsigned int &height) :
         tiles[width-1][j] = WALL;
     }
 
-    for(int i = 2; i < width; i += 4)
-        for(int j = 2; j < height; j += 4)
+    for(int i = 2; i < width; i += 2)
+        for(int j = 2; j < height; j += 2)
             if(tiles[i][j] == VOID)
                 tiles[i][j] = BLOCK;
 }

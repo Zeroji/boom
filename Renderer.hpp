@@ -15,7 +15,7 @@
  */
 class Renderer {
 public:
-    Renderer(Engine *engine, sf::RenderWindow *window);
+    Renderer(Engine *engine, sf::RenderTarget *target);
 
     void render();
     void resize(unsigned int width, unsigned int height);
@@ -31,7 +31,7 @@ private:
     Engine *engine;
     const Map &map;
     const unsigned int width, height;
-    sf::RenderWindow *window;
+    sf::RenderTarget *target;
     sf::View gameView;
 };
 

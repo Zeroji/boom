@@ -6,8 +6,8 @@
 #include "Renderer.hpp"
 #include "Player.hpp"
 
-Renderer::Renderer(Engine *engine, sf::RenderWindow *window) :
-        engine(engine), window(window), map(engine->getMap()),
+Renderer::Renderer(Engine *engine, sf::RenderTarget *target) :
+        engine(engine), target(target), map(engine->getMap()),
         width(map.getWidth()), height(map.getHeight())
 {
     tileSet.loadFromFile("res/tiles.png");
@@ -43,7 +43,7 @@ const std::vector<sf::Color> Renderer::defaultColors = {
 };
 
 void Renderer::render() {
-    window->setView(gameView);
+    target->setView(gameView);
 
     // Set textures for vertices
     for (unsigned int x = 0; x < width; ++x) {
@@ -57,34 +57,25 @@ void Renderer::render() {
         }
     }
 
-    window->draw(vertices, &tileSet);
+    target->draw(vertices, &tileSet);
 
     for(const Player &p: engine->getPlayers()) {
         playerSpr.setColor(defaultColors[p.id]);
         // Add 1, 1 to account for origin translation, divide to account for half tiles
         playerSpr.setPosition((p.getIPos() + sf::Vector2f(1, 1)) / 2.f);
         playerSpr.setRotation(p.facing * 90.f);
-        window->draw(playerSpr);
+        target->draw(playerSpr);
     }
 }
 
 /**
- * Creates a letterbox view to keep the engine aspect ratio,
- * no matter what the window aspect ratio is set to
- * @param width Window width
- * @param height Window height
+ * Creates a letterbox view to keep the engine size,
+ * no matter what the target size is set to
+ * @param width Target width
+ * @param height Target height
  */
 void Renderer::resize(unsigned int width, unsigned int height) {
-    float windowRatio = width / (float) height;
-    float engineRatio = this->width / (float) this->height;
-
-    sf::FloatRect viewport(0, 0, 1.f, 1.f);
-    if(windowRatio > engineRatio) {             // Horizontal black bars
-        viewport.width = engineRatio / windowRatio;
-        viewport.left = (1 - viewport.width) / 2;
-    } else {                                    // Vertical black bars
-        viewport.height = windowRatio / engineRatio;
-        viewport.top = (1 - viewport.height) / 2;
-    }
+    float borderLeft = (width - this->width * tileSize) / 2.f, borderTop = (height - this->height * tileSize) / 2.f;
+    sf::FloatRect viewport(borderLeft / width, borderTop / height, (float)this->width * tileSize / (float) width, this->height * tileSize / (float) height);
     gameView.setViewport(viewport);
 }
