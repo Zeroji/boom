@@ -38,8 +38,8 @@ private:
     State state = State::TITLE;
     InputHandlerArray handlers;
     std::map<unsigned int, unsigned int> inputMapper;
-    Engine engine;
-    Renderer renderer;
+    std::unique_ptr<Engine> engine;
+    std::unique_ptr<Renderer> renderer;
     sf::RenderWindow window;
     sf::RenderTexture target;
     sf::Sprite targetSprite;

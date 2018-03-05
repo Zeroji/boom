@@ -14,6 +14,9 @@ Renderer::Renderer(Engine *engine, sf::RenderTarget *target) :
 
     // View is technically one pixel per tile, scaled by viewport
     gameView.reset(sf::FloatRect(0, 0, width, height));
+    sf::Vector2f size(target->getSize());
+    float borderLeft = (size.x - width * tileSize) / 2.f, borderTop = (size.y - height * tileSize) / 2.f;
+    gameView.setViewport(sf::FloatRect(borderLeft / size.x, borderTop / size.y, width *tileSize / size.x, height * tileSize / size.y));
 
     // Initialize vertex array and fill positions (tiles won't move)
     vertices.setPrimitiveType(sf::Quads);
@@ -66,16 +69,4 @@ void Renderer::render() {
         playerSpr.setRotation(p.facing * 90.f);
         target->draw(playerSpr);
     }
-}
-
-/**
- * Creates a letterbox view to keep the engine size,
- * no matter what the target size is set to
- * @param width Target width
- * @param height Target height
- */
-void Renderer::resize(unsigned int width, unsigned int height) {
-    float borderLeft = (width - this->width * tileSize) / 2.f, borderTop = (height - this->height * tileSize) / 2.f;
-    sf::FloatRect viewport(borderLeft / width, borderTop / height, (float)this->width * tileSize / (float) width, this->height * tileSize / (float) height);
-    gameView.setViewport(viewport);
 }

@@ -7,11 +7,9 @@
 
 const sf::Vector2u Client::resolution(320, 180);
 
-Client::Client() : window(sf::VideoMode(resolution.x * 2, resolution.y * 2), "BOOM"),
-                   renderer(&engine, &target), engine(15, 11, 5), handlers(this) {
+Client::Client() : window(sf::VideoMode(resolution.x * 2, resolution.y * 2), "BOOM"), handlers(this) {
     window.setKeyRepeatEnabled(false);
     window.setFramerateLimit(60);
-    renderer.resize(resolution.x, resolution.y);
     target.create(resolution.x, resolution.y);
     target.display();
     targetSprite.setTexture(target.getTexture());
@@ -32,7 +30,7 @@ void Client::run() {
             processEvent(event);
         }
         if(state == State::GAME)
-            engine.update(clock.restart());
+            engine->update(clock.restart());
         render();
     }
 }
@@ -60,7 +58,7 @@ void Client::render() {
             target.draw(playerCount);
             break;
         case State::GAME:
-            renderer.render();
+            renderer->render();
             break;
     }
     window.draw(targetSprite);
@@ -92,7 +90,7 @@ void Client::processInput(const unsigned int &player, const Control &control, bo
             }
             break;
         case State::GAME:
-            engine.processInput(inputMapper[player], control, state, controls);
+            engine->processInput(inputMapper[player], control, state, controls);
             break;
     }
 }
@@ -108,6 +106,7 @@ void Client::startGame() {
     for(const auto &handler : handlers)
         if(handler)
             inputMapper[handler->uid] = index++;
-    engine = Engine(15, 11, handlers.getCount());
+    engine.reset(new Engine(15, 11, handlers.getCount()));
+    renderer.reset(new Renderer(engine.get(), &target));
     this->state = State::GAME;
 }

@@ -18,7 +18,6 @@ public:
     Renderer(Engine *engine, sf::RenderTarget *target);
 
     void render();
-    void resize(unsigned int width, unsigned int height);
 
 private:
     static const std::vector<sf::Color> defaultColors;
