@@ -9,6 +9,8 @@
 #include "Engine.hpp"
 #include "Renderer.hpp"
 #include "InputHandler.hpp"
+#include "PlayerMenu.hpp"
+#include "PlayerSkin.hpp"
 
 enum class Control : int8_t;
 
@@ -29,11 +31,13 @@ public:
     void processEvent(sf::Event &event);
     void processInput(const unsigned int &player, const Control &control, bool state, const std::vector<Control> &controls);
     void addInput(const unsigned int &player);
+    void removeInput(const unsigned int &player);
     void render();
     void resize(unsigned int width, unsigned int height);
 
 private:
     void startGame();
+    void positionMenus();
 
     State state = State::TITLE;
     InputHandlerArray handlers;
@@ -47,6 +51,8 @@ private:
     // Render related
     sf::Font font;
     sf::Text playerCount;
+    std::vector<PlayerMenu> menus;
+    std::vector<PlayerSkin*> skins;
 };
 
 

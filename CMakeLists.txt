@@ -9,7 +9,7 @@ set(TARGET_LIBS sfml-graphics sfml-window sfml-system)
 
 # Linux client
 #set(CMAKE_SYSTEM_NAME Linux)
-add_executable(boom ${SOURCE_FILES})
+add_executable(boom ${SOURCE_FILES} PlayerSkin.cpp PlayerSkin.hpp PlayerMenu.cpp PlayerMenu.hpp)
 target_link_libraries(boom ${TARGET_LIBS})
 
 add_custom_command(TARGET boom POST_BUILD

@@ -13,10 +13,9 @@ Client::Client() : window(sf::VideoMode(resolution.x * 2, resolution.y * 2), "BO
     target.create(resolution.x, resolution.y);
     target.display();
     targetSprite.setTexture(target.getTexture());
-
-    font.loadFromFile("res/Comic_Sans_MS.ttf");
+    font.loadFromFile("res/04b_30.ttf");
     playerCount.setFont(font);
-    playerCount.setCharacterSize(80);
+    playerCount.setCharacterSize(34);
     playerCount.setFillColor(sf::Color::White);
     playerCount.setString("0");
     playerCount.setPosition(40, 40);
@@ -54,8 +53,8 @@ void Client::render() {
     target.clear(sf::Color::Black);
     switch (state) {
         case State::TITLE:
-            playerCount.setString(std::to_string(handlers.getCount()));
-            target.draw(playerCount);
+            for(auto &menu: menus)
+                target.draw(menu);
             break;
         case State::GAME:
             renderer->render();
@@ -85,9 +84,8 @@ void Client::processInput(const unsigned int &player, const Control &control, bo
         case State::TITLE:
             if(control == Control::Start)
                 startGame();
-            if(control == Control::B) {
-                handlers.removeHandler(player);
-            }
+            if(control == Control::B)
+                removeInput(player);
             break;
         case State::GAME:
             engine->processInput(inputMapper[player], control, state, controls);
@@ -96,7 +94,20 @@ void Client::processInput(const unsigned int &player, const Control &control, bo
 }
 
 void Client::addInput(const unsigned int &player) {
+    while (player >= skins.size()) skins.emplace_back(nullptr);
+    skins[player] = new PlayerSkin(player);
+    while (player >= menus.size()) menus.emplace_back(PlayerMenu(font, nullptr));
+    menus[player].setSkin(skins[player]);
+    positionMenus();
+}
 
+void Client::removeInput(const unsigned int &player) {
+    handlers.removeHandler(player);
+    menus[player].setSkin(nullptr);
+    delete skins[player];
+    skins[player] = nullptr;
+    while(skins.back() == nullptr) { skins.pop_back(); menus.pop_back(); }
+    positionMenus();
 }
 
 void Client::startGame() {
@@ -109,4 +120,27 @@ void Client::startGame() {
     engine.reset(new Engine(15, 11, handlers.getCount()));
     renderer.reset(new Renderer(engine.get(), &target));
     this->state = State::GAME;
+}
+
+void Client::positionMenus() {
+    // less than 4: side by side, row centered horizontally
+    // more than 3: two rows of roughly equal lengths
+    const unsigned long &size = menus.size();
+    unsigned long pivot = (size+1) / 2;
+    if(size <= 3) pivot = size;
+    sf::Vector2f pos(0, 0);
+    for (int i = 0; i < menus.size(); ++i) {
+        if(i<pivot)
+            pos.x = i - pivot / 2.f;
+        else
+            pos.x = (i - pivot)  - (size - pivot) / 2.f;
+        if(size < 4)
+            pos.y = 1 / 2.f;
+        else
+            pos.y = i < pivot ? 0 : 1;
+        pos.x += 2;                 // center
+        pos.x *= 80; pos.y *= 60;   // scale
+        pos.y += 60;                // offset
+        menus[i].setPosition(pos);
+    }
 }
