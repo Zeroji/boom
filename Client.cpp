@@ -7,18 +7,12 @@
 
 const sf::Vector2u Client::resolution(320, 180);
 
-Client::Client() : window(sf::VideoMode(resolution.x * 2, resolution.y * 2), "BOOM"), handlers(this) {
+Client::Client() : window(sf::VideoMode(resolution.x * 2, resolution.y * 2), "BOOM"), handlers(this), res("res") {
     window.setKeyRepeatEnabled(false);
     window.setFramerateLimit(60);
     target.create(resolution.x, resolution.y);
     target.display();
     targetSprite.setTexture(target.getTexture());
-    font.loadFromFile("res/04b_30.ttf");
-    playerCount.setFont(font);
-    playerCount.setCharacterSize(34);
-    playerCount.setFillColor(sf::Color::White);
-    playerCount.setString("0");
-    playerCount.setPosition(40, 40);
 }
 
 void Client::run() {
@@ -96,7 +90,7 @@ void Client::processInput(const unsigned int &player, const Control &control, bo
 void Client::addInput(const unsigned int &player) {
     while (player >= skins.size()) skins.emplace_back(nullptr);
     skins[player] = new PlayerSkin(player);
-    while (player >= menus.size()) menus.emplace_back(PlayerMenu(font, nullptr));
+    while (player >= menus.size()) menus.emplace_back(PlayerMenu(res, nullptr));
     menus[player].setSkin(skins[player]);
     positionMenus();
 }
@@ -118,7 +112,7 @@ void Client::startGame() {
         if(handler)
             inputMapper[handler->uid] = index++;
     engine.reset(new Engine(15, 11, handlers.getCount()));
-    renderer.reset(new Renderer(engine.get(), &target));
+    renderer.reset(new Renderer(res, engine.get(), &target));
     this->state = State::GAME;
 }
 

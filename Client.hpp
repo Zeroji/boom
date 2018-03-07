@@ -11,6 +11,7 @@
 #include "InputHandler.hpp"
 #include "PlayerMenu.hpp"
 #include "PlayerSkin.hpp"
+#include "ResourceLoader.hpp"
 
 enum class Control : int8_t;
 
@@ -48,9 +49,9 @@ private:
     sf::RenderTexture target;
     sf::Sprite targetSprite;
 
+    ResourceLoader res;
+
     // Render related
-    sf::Font font;
-    sf::Text playerCount;
     std::vector<PlayerMenu> menus;
     std::vector<PlayerSkin*> skins;
 };

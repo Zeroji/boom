@@ -8,20 +8,21 @@
 
 #include <SFML/Graphics.hpp>
 #include "PlayerSkin.hpp"
+#include "ResourceLoader.hpp"
 
 class PlayerMenu : public sf::Drawable, public sf::Transformable {
 public:
-    PlayerMenu(sf::Font &font, PlayerSkin *skin);
+    PlayerMenu(const ResourceLoader &res, PlayerSkin *skin);
     void setSkin(PlayerSkin *skin);
 
 protected:
     void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 
-    sf::Font &font;
+    const ResourceLoader &res;
     PlayerSkin* skin;
 
     sf::RectangleShape outline;
-    sf::Text name;
+    std::vector<sf::Text> name;
 };
 
 

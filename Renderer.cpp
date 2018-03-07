@@ -6,12 +6,10 @@
 #include "Renderer.hpp"
 #include "Player.hpp"
 
-Renderer::Renderer(Engine *engine, sf::RenderTarget *target) :
-        engine(engine), target(target), map(engine->getMap()),
+Renderer::Renderer(const ResourceLoader &res, Engine *engine, sf::RenderTarget *target) :
+        res(res), engine(engine), target(target), map(engine->getMap()),
         width(map.getWidth()), height(map.getHeight())
 {
-    tileSet.loadFromFile("res/tiles.png");
-
     // View is technically one pixel per tile, scaled by viewport
     gameView.reset(sf::FloatRect(0, 0, width, height));
     sf::Vector2f size(target->getSize());
@@ -32,9 +30,8 @@ Renderer::Renderer(Engine *engine, sf::RenderTarget *target) :
     }
 
     // Initialize player view
-    playerTex.loadFromFile("res/player.png");
-    playerSpr.setTexture(playerTex);
-    const sf::Vector2f pTSize(playerTex.getSize());
+    playerSpr.setTexture(res.player);
+    const sf::Vector2f pTSize(res.player.getSize());
     playerSpr.setScale(1 / pTSize.x, 1 / pTSize.y);
     playerSpr.setOrigin(pTSize / 2.f);
 
@@ -60,7 +57,7 @@ void Renderer::render() {
         }
     }
 
-    target->draw(vertices, &tileSet);
+    target->draw(vertices, &res.tiles);
 
     for(const Player &p: engine->getPlayers()) {
         playerSpr.setColor(defaultColors[p.id]);
