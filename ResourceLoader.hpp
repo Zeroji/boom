@@ -13,6 +13,7 @@ class ResourceLoader {
 public:
     const sf::Texture tiles;
     const sf::Texture player;
+    const sf::Texture arrow;
     const sf::Font font;
 
     explicit ResourceLoader(const std::string &path);

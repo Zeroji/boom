@@ -76,10 +76,19 @@ void Client::resize(unsigned int width, unsigned int height) {
 void Client::processInput(const unsigned int &player, const Control &control, bool state, const std::vector<Control> &controls) {
     switch (this->state) {
         case State::TITLE:
-            if(control == Control::Start)
-                startGame();
-            if(control == Control::B)
-                removeInput(player);
+            if(state)
+                switch(control) {
+                    case Control::Start:
+                        startGame();
+                        break;
+                    case Control::B:
+                        removeInput(player);
+                        break;
+                    default:
+                        if(player<menus.size())
+                            menus[player].keyPressed(control);
+                        break;
+                }
             break;
         case State::GAME:
             engine->processInput(inputMapper[player], control, state, controls);
