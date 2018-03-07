@@ -11,13 +11,16 @@
 #include "ResourceLoader.hpp"
 #include "Control.hpp"
 
-enum class MenuState { NAME, COLOR, LEAVE };
+enum class MenuState { NAME, COLOR, LEAVE, READY };
 
 class PlayerMenu : public sf::Drawable, public sf::Transformable {
 public:
     PlayerMenu(const ResourceLoader &res, PlayerSkin *skin);
     void setSkin(PlayerSkin *skin);
     void keyPressed(const Control &control);
+    inline bool hasSkin() const { return skin != nullptr; }
+    inline bool isReady() const { return state == MenuState::READY; }
+    inline bool hasLeft() const { return left; }
 
 protected:
     void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
@@ -28,12 +31,13 @@ protected:
 
     MenuState state;
     unsigned int letterIndex;
+    bool left;
 
     sf::RectangleShape outline;
     std::vector<sf::Text> name;
     sf::Sprite arrowUp, arrowDown;
 
-    sf::Text colorText, leaveText;
+    sf::Text colorText, leaveText, readyText;
     sf::Sprite colorArrow, leaveArrow;
 
     static const sf::Color noColor, leaveColor;

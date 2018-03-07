@@ -48,6 +48,11 @@ PlayerMenu::PlayerMenu(const ResourceLoader &res, PlayerSkin *skin) : res(res), 
     leaveArrow.setPosition(74, 50);
     leaveArrow.setColor(leaveColor);
 
+    readyText.setString("ready");
+    readyText.setFont(res.font);
+    readyText.setPosition(3, 39);
+    readyText.setCharacterSize(17);
+
     update();
 }
 
@@ -57,6 +62,10 @@ void PlayerMenu::draw(sf::RenderTarget &target, sf::RenderStates states) const {
     for(auto &letter: name)
         target.draw(letter, states);
     if(!skin) return;
+    if(state == MenuState::READY) {
+        target.draw(readyText, states);
+        return;
+    }
     target.draw(colorText, states);
     target.draw(leaveText, states);
     if(state == MenuState::NAME) {
@@ -70,6 +79,9 @@ void PlayerMenu::draw(sf::RenderTarget &target, sf::RenderStates states) const {
 }
 
 void PlayerMenu::setSkin(PlayerSkin *skin) {
+    state = MenuState::NAME;
+    letterIndex = 0;
+    left = false;
     PlayerMenu::skin = skin;
     update();
 }
@@ -95,10 +107,20 @@ void PlayerMenu::update() {
     colorArrow.setColor(skin->getColor(1));
 
     leaveText.setFillColor(state==MenuState::LEAVE?leaveColor:noColor);
+
+    readyText.setFillColor(main);
 }
 
 void PlayerMenu::keyPressed(const Control &control) {
     if(!skin) return;
+    if(control == Control::Start) {
+        if(state == MenuState::READY)
+            state = MenuState::COLOR;
+        else
+            state = MenuState::READY;
+        update();
+        return;
+    }
     char &l = skin->name[letterIndex];
     switch (state) {
         case MenuState::NAME:
@@ -145,6 +167,12 @@ void PlayerMenu::keyPressed(const Control &control) {
             break;
         case MenuState::LEAVE:
             if (control == Control::Up)
+                state = MenuState::COLOR;
+            if (control == Control::A || control == Control::B)
+                left = true;
+            break;
+        case MenuState::READY:
+            if (control == Control::B)
                 state = MenuState::COLOR;
             break;
     }
