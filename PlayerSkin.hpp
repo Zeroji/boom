@@ -12,11 +12,14 @@ class PlayerSkin {
 public:
     explicit PlayerSkin(unsigned int id);
 
-    char name[4] = "ABC";
-    sf::Color color = sf::Color::Red;
+    char name[4] = "AAA";
+    unsigned int color = 0;
+    const sf::Color &getColor() const;
+    const sf::Color &getColor(int delta) const;
+    void setColor(int delta);
 
 private:
-    const static std::vector<sf::Color> defaultColors;
+    const static std::vector<sf::Color> colors;
 };
 
 

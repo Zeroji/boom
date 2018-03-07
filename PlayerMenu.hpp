@@ -11,7 +11,7 @@
 #include "ResourceLoader.hpp"
 #include "Control.hpp"
 
-enum class MenuState { NAME };
+enum class MenuState { NAME, COLOR, LEAVE };
 
 class PlayerMenu : public sf::Drawable, public sf::Transformable {
 public:
@@ -32,6 +32,11 @@ protected:
     sf::RectangleShape outline;
     std::vector<sf::Text> name;
     sf::Sprite arrowUp, arrowDown;
+
+    sf::Text colorText, leaveText;
+    sf::Sprite colorArrow, leaveArrow;
+
+    static const sf::Color noColor, leaveColor;
 };
 
 
