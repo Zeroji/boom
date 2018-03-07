@@ -120,8 +120,12 @@ void Client::startGame() {
     for(const auto &handler : handlers)
         if(handler)
             inputMapper[handler->uid] = index++;
+    std::vector<PlayerSkin*> renderSkins;
+    for(auto &skin: skins)
+        if(skin)
+            renderSkins.emplace_back(skin);
     engine.reset(new Engine(15, 11, handlers.getCount()));
-    renderer.reset(new Renderer(res, engine.get(), &target));
+    renderer.reset(new Renderer(res, engine.get(), &target, renderSkins));
     this->state = State::GAME;
 }
 

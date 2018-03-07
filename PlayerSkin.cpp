@@ -26,3 +26,8 @@ void PlayerSkin::setColor(int delta) {
     while (index < 0) index += (int) colors.size();
     color = (unsigned int)(index % colors.size());
 }
+
+void PlayerSkin::applyTo(sf::Sprite &target, const Direction &facing) const {
+    target.setColor(getColor());
+    target.setRotation(facing * 90);
+}

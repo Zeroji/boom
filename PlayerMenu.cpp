@@ -13,6 +13,10 @@ PlayerMenu::PlayerMenu(const ResourceLoader &res, PlayerSkin *skin) : res(res), 
     outline.setFillColor(sf::Color::Transparent);
     outline.setOutlineThickness(1);
 
+    playerSpr.setTexture(res.player);
+    playerSpr.setOrigin(8, 8);
+    playerSpr.setPosition(69, 14);
+
     for(unsigned int i=0; i<3; i++) {
         sf::Text &letter = name[i];
         letter.setFont(res.font);
@@ -62,6 +66,7 @@ void PlayerMenu::draw(sf::RenderTarget &target, sf::RenderStates states) const {
     for(auto &letter: name)
         target.draw(letter, states);
     if(!skin) return;
+    target.draw(playerSpr, states);
     if(state == MenuState::READY) {
         target.draw(readyText, states);
         return;
@@ -98,6 +103,8 @@ void PlayerMenu::update() {
 
     if(!skin) return;
 
+    skin->applyTo(playerSpr, playerDir);
+
     arrowUp.setPosition(20*letterIndex+10, 4);
     arrowDown.setPosition(20*letterIndex+10, 24);
     arrowUp.setColor(main);
@@ -113,6 +120,8 @@ void PlayerMenu::update() {
 
 void PlayerMenu::keyPressed(const Control &control) {
     if(!skin) return;
+    if(control::isDir(control))
+        playerDir = control::toDir(control);
     if(control == Control::Start) {
         if(state == MenuState::READY)
             state = MenuState::COLOR;

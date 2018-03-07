@@ -6,8 +6,8 @@
 #include "Renderer.hpp"
 #include "Player.hpp"
 
-Renderer::Renderer(const ResourceLoader &res, Engine *engine, sf::RenderTarget *target) :
-        res(res), engine(engine), target(target), map(engine->getMap()),
+Renderer::Renderer(const ResourceLoader &res, Engine *engine, sf::RenderTarget *target, const std::vector<PlayerSkin*> &skins) :
+        res(res), engine(engine), target(target), skins(skins), map(engine->getMap()),
         width(map.getWidth()), height(map.getHeight())
 {
     // View is technically one pixel per tile, scaled by viewport
@@ -37,11 +37,6 @@ Renderer::Renderer(const ResourceLoader &res, Engine *engine, sf::RenderTarget *
 
 }
 
-// Some default colors for players. Useful to differentiate.
-const std::vector<sf::Color> Renderer::defaultColors = {
-        sf::Color::Blue, sf::Color::Magenta, sf::Color::Green, sf::Color::Red, sf::Color::Cyan
-};
-
 void Renderer::render() {
     target->setView(gameView);
 
@@ -60,10 +55,9 @@ void Renderer::render() {
     target->draw(vertices, &res.tiles);
 
     for(const Player &p: engine->getPlayers()) {
-        playerSpr.setColor(defaultColors[p.id]);
+        skins[p.id]->applyTo(playerSpr, p.facing);
         // Add 1, 1 to account for origin translation, divide to account for half tiles
         playerSpr.setPosition((p.getIPos() + sf::Vector2f(1, 1)) / 2.f);
-        playerSpr.setRotation(p.facing * 90.f);
         target->draw(playerSpr);
     }
 }

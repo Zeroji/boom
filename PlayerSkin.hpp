@@ -7,6 +7,8 @@
 
 #include <SFML/Graphics/Color.hpp>
 #include <vector>
+#include <SFML/Graphics/Sprite.hpp>
+#include "Direction.hpp"
 
 class PlayerSkin {
 public:
@@ -17,6 +19,8 @@ public:
     const sf::Color &getColor() const;
     const sf::Color &getColor(int delta) const;
     void setColor(int delta);
+
+    void applyTo(sf::Sprite &target, const Direction &facing) const;
 
 private:
     const static std::vector<sf::Color> colors;

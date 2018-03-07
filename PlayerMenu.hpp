@@ -34,6 +34,8 @@ protected:
     bool left;
 
     sf::RectangleShape outline;
+    sf::Sprite playerSpr;
+    Direction playerDir=RIGHT;
     std::vector<sf::Text> name;
     sf::Sprite arrowUp, arrowDown;
 
