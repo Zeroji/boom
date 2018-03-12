@@ -31,8 +31,14 @@ public:
      */
     sf::Vector2f getIPos() const;
 
+    /**
+     * Return entity last even (full-tile) position
+     * @return Last even position
+     */
+    const sf::Vector2u &getLastEvenPos() const;
+
 public:
-    sf::Vector2u old, pos;
+    sf::Vector2u old, pos, lastEvenPos;
     sf::Time speed;
     sf::Time cooldown;
 };

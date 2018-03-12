@@ -25,6 +25,7 @@ ResourceLoader::ResourceLoader(const std::string &path) :
         tiles(loadTexture(path, "tiles.png")),
         player(loadTexture(path, "player.png")),
         arrow(loadTexture(path, "arrow.png")),
+        bomb(loadTexture(path, "bomb.png")),
         font(loadFont(path, "04b_30.ttf"))
 {
 }

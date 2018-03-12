@@ -35,6 +35,16 @@ Renderer::Renderer(const ResourceLoader &res, Engine *engine, sf::RenderTarget *
     playerSpr.setScale(1 / pTSize.x, 1 / pTSize.y);
     playerSpr.setOrigin(pTSize / 2.f);
 
+    bombSpr.setTexture(res.bomb);
+    const sf::Vector2f bTSize(res.bomb.getSize());
+    bombSpr.setScale(1 / bTSize.x, 1 / bTSize.y);
+    bombSpr.setOrigin(bTSize / 2.f);
+
+    bombTxt.setFont(res.font);
+    bombTxt.setCharacterSize(17);
+    bombTxt.setScale(sf::Vector2f(1/16.f, 1/16.f));
+    bombTxt.setFillColor(sf::Color::Green);
+
 }
 
 void Renderer::render() {
@@ -59,5 +69,14 @@ void Renderer::render() {
         // Add 1, 1 to account for origin translation, divide to account for half tiles
         playerSpr.setPosition((p.getIPos() + sf::Vector2f(1, 1)) / 2.f);
         target->draw(playerSpr);
+    }
+
+    for(const Bomb &b: engine->getBombs()) {
+        bombSpr.setPosition((b.getIPos() + sf::Vector2f(1, 1)) / 2.f);
+        bombTxt.setPosition(bombSpr.getPosition());
+        if(b.state == BombState::TICK) bombTxt.setString(std::to_string(b.tickRatio));
+        else bombTxt.setString(std::to_string(b.radius));
+        target->draw(bombSpr);
+        target->draw(bombTxt);
     }
 }

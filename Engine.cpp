@@ -39,6 +39,10 @@ const std::vector<Player> &Engine::getPlayers() const {
     return players;
 }
 
+const std::vector<Bomb> &Engine::getBombs() const {
+    return bombs;
+}
+
 void Engine::processInput(const unsigned int &playerId, const Control &control, const bool &state, const std::vector<Control> &controls) {
     if(playerId >= playerCount) return;
     Player &player = players[playerId];
@@ -53,12 +57,23 @@ void Engine::processInput(const unsigned int &playerId, const Control &control, 
             }
         }
     }
+    if(control == Control::A && state) {
+        bombs.emplace_back(Bomb(player.getLastEvenPos()));
+    }
 }
 
 void Engine::update(const sf::Time &elapsed) {
     for(Player &player: players) {
         updatePlayer(player);
         player.updateClock(elapsed);
+    }
+    for (int i = 0; i < bombs.size(); ++i) {
+        Bomb &bomb = bombs[i];
+        bomb.update(elapsed);
+        if(bomb.state == BombState::DONE) {
+            bombs.erase(bombs.begin() + i);
+            --i;
+        }
     }
 }
 

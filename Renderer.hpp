@@ -28,6 +28,8 @@ private:
     const unsigned int tileSize = 16;
     sf::VertexArray vertices;
     sf::Sprite playerSpr;
+    sf::Sprite bombSpr;
+    sf::Text bombTxt;
 
     Engine *engine;
     const Map &map;

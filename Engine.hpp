@@ -12,6 +12,7 @@ enum class Control : int8_t;
 
 #include "Map.hpp"
 #include "Player.hpp"
+#include "Bomb.hpp"
 
 class Engine {
 public:
@@ -29,12 +30,14 @@ public:
 
     void update(const sf::Time &elapsed);
     const std::vector<Player> &getPlayers() const;
+    const std::vector<Bomb> &getBombs() const;
     void processInput(const unsigned int &playerId, const Control &control, const bool &state, const std::vector<Control> &controls);
 
 private:
     Map map;
     unsigned int playerCount;
     std::vector<Player> players;
+    std::vector<Bomb> bombs;
 };
 
 
