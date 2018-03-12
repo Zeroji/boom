@@ -71,11 +71,11 @@ void Renderer::render() {
         target->draw(playerSpr);
     }
 
-    for(const Bomb &b: engine->getBombs()) {
-        bombSpr.setPosition((b.getIPos() + sf::Vector2f(1, 1)) / 2.f);
+    for(const auto &b: engine->getBombs()) {
+        bombSpr.setPosition((b->getIPos() + sf::Vector2f(1, 1)) / 2.f);
         bombTxt.setPosition(bombSpr.getPosition());
-        if(b.state == BombState::TICK) bombTxt.setString(std::to_string(b.tickRatio));
-        else bombTxt.setString(std::to_string(b.radius));
+        if(b->state == BombState::TICK) bombTxt.setString(std::to_string(b->tickRatio));
+        else bombTxt.setString(std::to_string(b->radius));
         target->draw(bombSpr);
         target->draw(bombTxt);
     }
