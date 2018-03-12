@@ -11,6 +11,10 @@
 #include "Tile.hpp"
 
 class Map {
+    struct TileData {
+        Tile tile=VOID;
+    };
+
 public:
 
     Map(const unsigned int &width, const unsigned int &height);
@@ -25,7 +29,8 @@ public:
 
 private:
     unsigned int width, height;
-    std::vector<std::vector<Tile>> tiles;
+    Tile &t(const unsigned int &x, const unsigned int &y);
+    std::vector<std::vector<TileData>> tiles;
 };
 
 
