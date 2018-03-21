@@ -39,6 +39,9 @@ public:
     const std::vector<const Bomb*> &getBombs(const sf::Vector2u &pos) const;
 
     bool inBounds(const sf::Vector2u &pos) const;
+
+    sf::Vector2u getPlayerBase(unsigned int id);
+
 private:
     unsigned int width, height;
     TileData &td(const unsigned int &x, const unsigned int &y);
@@ -48,6 +51,8 @@ private:
     std::random_device rd;
     std::mt19937 gen;
     std::bernoulli_distribution dist;
+
+    void clearSpaceAround(const sf::Vector2u &pos);
 };
 
 

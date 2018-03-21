@@ -102,3 +102,30 @@ const std::vector<const Bomb *> &Map::getBombs(const sf::Vector2u &pos) const {
 bool Map::inBounds(const sf::Vector2u &pos) const {
     return pos.x >= 0 && pos.x < width && pos.y >= 0 && pos.y < height;
 }
+
+void Map::clearSpaceAround(const sf::Vector2u &pos) {
+    auto clear = [this](const unsigned int x, const unsigned int y) {
+        if(inBounds(sf::Vector2u(x, y)) && tile::isBreakable(t(x, y)))
+            t(x, y)=Tile::VOID;
+    };
+    clear(pos.x, pos.y);
+    clear(pos.x+1, pos.y);
+    clear(pos.x-1, pos.y);
+    clear(pos.x, pos.y+1);
+    clear(pos.x, pos.y-1);
+}
+
+sf::Vector2u Map::getPlayerBase(unsigned int id) {
+    sf::Vector2u pos;
+
+    if(id==0 || id==3 || id==6) pos.x = 1;
+    if(id==1 || id==2 || id==7) pos.x = width - 2;
+    if(id==4 || id==5) pos.x = width / 2u;
+
+    if(id==0 || id==2 || id==4) pos.y = 1;
+    if(id==1 || id==3 || id==5) pos.y = height - 2;
+    if(id==6 || id==7) pos.y = height / 2u;
+
+    clearSpaceAround(pos);
+    return pos;
+}

@@ -8,7 +8,7 @@
 Engine::Engine(const unsigned int &mapWidth, const unsigned int &mapHeight, const unsigned int &playerCount):
         map(mapWidth, mapHeight), playerCount(playerCount) {
     for (unsigned int i = 0; i < playerCount; ++i) {
-        Player player(sf::Vector2u(4 * i + 2, 2), i);
+        Player player(map.getPlayerBase(i) * 2u, i);
         players.emplace_back(player);
     }
 }
