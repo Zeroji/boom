@@ -54,7 +54,7 @@ void Renderer::render() {
     for (unsigned int x = 0; x < width; ++x) {
         for (unsigned int y = 0; y < height; ++y) {
             unsigned int i = (y * width + x) * 4;
-            unsigned int t = map(x, y);
+            auto t = (unsigned int) map(x, y);
             vertices[i+0].texCoords = sf::Vector2f(t*tileSize, 0);
             vertices[i+1].texCoords = sf::Vector2f(t*tileSize+tileSize, 0);
             vertices[i+2].texCoords = sf::Vector2f(t*tileSize+tileSize, tileSize);

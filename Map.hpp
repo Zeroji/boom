@@ -10,12 +10,13 @@
 #include <SFML/System/Vector2.hpp>
 #include "Tile.hpp"
 #include <map>
+#include <random>
 
 class Bomb;
 
 class Map {
     struct TileData {
-        Tile tile=VOID;
+        Tile tile=Tile::VOID;
         std::map<const Bomb*, unsigned int> explosions;
         std::vector<const Bomb*> explosionVector;
     };
@@ -43,6 +44,10 @@ private:
     TileData &td(const unsigned int &x, const unsigned int &y);
     Tile &t(const unsigned int &x, const unsigned int &y);
     std::vector<std::vector<TileData>> tiles;
+
+    std::random_device rd;
+    std::mt19937 gen;
+    std::bernoulli_distribution dist;
 };
 
 

@@ -7,9 +7,10 @@
 
 #include <ostream>
 
-enum Tile {
+enum class Tile : unsigned int {
     VOID,
     BLOCK,
+    SOLID_BLOCK,
     WALL
 };
 
@@ -27,6 +28,13 @@ namespace tile {
      * @return true if it's a solid surface
      */
     bool isSurface(const Tile &tile);
+
+    /**
+     * Whether a tile is breakable (i.e. a bomb can explode it)
+     * @param tile The tile to check
+     * @return true if it can be broken
+     */
+    bool isBreakable(const Tile &tile);
 }
 std::ostream &operator<<(std::ostream &stream, const Tile &tile);
 
