@@ -26,6 +26,7 @@ public:
 
     inline bool isBlocking(sf::Vector2u &pos) const { return tile::isBlocking(map(pos)); }
     inline bool isSurface(sf::Vector2u &pos) const { return tile::isSurface(map(pos)); }
+    inline bool isBreakable(sf::Vector2u &pos) const { return tile::isBreakable(map(pos)); }
 
     bool isValid(const sf::Vector2u &entityPos) const;
 

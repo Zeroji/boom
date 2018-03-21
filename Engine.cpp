@@ -104,9 +104,13 @@ bool Engine::updateBomb(const Bomb *bomb) {
             sf::Vector2u pos(bomb->pos / 2u);
             for (unsigned int i = 1; i <= bomb->radius; ++i) {
                 pos += dir;
-                if(isBlocking(pos))
+                if(isBlocking(pos) && !isBreakable(pos))
                     break;
                 if(i > bomb->oldRadius) {
+                    // Break blocks
+                    if (isBreakable(pos))
+                        if(!map.breakTile(pos))
+                            break;
                     // Tile newly reached by explosion radius
                     map.updateBomb(bomb, pos, i);
                     // Detonate nearby bombs

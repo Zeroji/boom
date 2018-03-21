@@ -129,3 +129,10 @@ sf::Vector2u Map::getPlayerBase(unsigned int id) {
     clearSpaceAround(pos);
     return pos;
 }
+
+bool Map::breakTile(const sf::Vector2u &pos) {
+    if(!tile::isBreakable(t(pos.x, pos.y)))
+        return false;
+    t(pos.x, pos.y) = Tile::VOID;
+    return true;
+}

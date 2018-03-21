@@ -42,6 +42,8 @@ public:
 
     sf::Vector2u getPlayerBase(unsigned int id);
 
+    bool breakTile(const sf::Vector2u &pos);
+
 private:
     unsigned int width, height;
     TileData &td(const unsigned int &x, const unsigned int &y);
