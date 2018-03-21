@@ -124,6 +124,10 @@ JoystickHandler::JoystickHandler(Client *client, const unsigned int &uid, const 
     mapping.emplace_back(std::pair<Control, Input>(Control::Left, Input(joystickId, sf::Joystick::Axis::X, false)));
     mapping.emplace_back(std::pair<Control, Input>(Control::Down, Input(joystickId, sf::Joystick::Axis::Y, true)));
     mapping.emplace_back(std::pair<Control, Input>(Control::Right, Input(joystickId, sf::Joystick::Axis::X, true)));
+    mapping.emplace_back(std::pair<Control, Input>(Control::Up, Input(joystickId, sf::Joystick::Axis::PovY, false)));
+    mapping.emplace_back(std::pair<Control, Input>(Control::Left, Input(joystickId, sf::Joystick::Axis::PovX, false)));
+    mapping.emplace_back(std::pair<Control, Input>(Control::Down, Input(joystickId, sf::Joystick::Axis::PovY, true)));
+    mapping.emplace_back(std::pair<Control, Input>(Control::Right, Input(joystickId, sf::Joystick::Axis::PovX, true)));
     mapping.emplace_back(std::pair<Control, Input>(Control::A, Input(joystickId, 0u)));
     mapping.emplace_back(std::pair<Control, Input>(Control::B, Input(joystickId, 1u)));
     mapping.emplace_back(std::pair<Control, Input>(Control::Start, Input(joystickId, 7u)));
