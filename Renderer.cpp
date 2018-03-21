@@ -86,10 +86,21 @@ void Renderer::render() {
     xp.setFillColor(sf::Color::Red);
     for (unsigned int x = 0; x < width; ++x) {
         for (unsigned int y = 0; y < height; ++y) {
-            if (map.getBombs(sf::Vector2u(x, y)).size() > 0) {
+            auto const &bombs = map.getBombs(sf::Vector2u(x, y));
+            if (!bombs.empty()) {
                 xp.setPosition(x, y);
-                target->draw(xp);
+                for(auto const &bomb: bombs) {
+                    xp.setFillColor(getExplosionColor(*bomb));
+                    target->draw(xp);
+                }
             }
         }
     }
+}
+
+const sf::Color &Renderer::getExplosionColor(const Bomb &bomb) const {
+    if(bomb.player == nullptr)
+        return defaultExplosionColor;
+    else
+        return skins[bomb.player->id]->getColor();
 }

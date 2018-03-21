@@ -58,7 +58,7 @@ void Engine::processInput(const unsigned int &playerId, const Control &control, 
         }
     }
     if(control == Control::A && state) {
-        bombs.emplace_back(new Bomb(player.getLastEvenPos()));
+        bombs.emplace_back(new Bomb(player.getLastEvenPos(), &player));
     }
 }
 

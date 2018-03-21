@@ -6,6 +6,7 @@
 #define BOOM_BOMB_HPP
 
 
+class Player;
 #include "Entity.hpp"
 
 enum class BombState { TICK, EXPLODING, DONE };
@@ -13,6 +14,7 @@ enum class BombState { TICK, EXPLODING, DONE };
 class Bomb : public Entity {
 public:
     explicit Bomb(const sf::Vector2u &pos);
+    explicit Bomb(const sf::Vector2u &pos, const Player *player);
 
     /**
      * Updates the bomb
@@ -29,6 +31,7 @@ public:
     BombState state;
     float tickRatio=0;
     unsigned int radius=0, oldRadius=0;
+    const Player *player;
 
 private:
     sf::Time tick=sf::Time::Zero;

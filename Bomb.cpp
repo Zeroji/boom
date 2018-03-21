@@ -4,7 +4,9 @@
 
 #include "Bomb.hpp"
 
-Bomb::Bomb(const sf::Vector2u &pos) : Entity(pos), state(BombState::TICK) {}
+Bomb::Bomb(const sf::Vector2u &pos) : Entity(pos), player(nullptr), state(BombState::TICK) {}
+
+Bomb::Bomb(const sf::Vector2u &pos, const Player *player) : Entity(pos), player(player), state(BombState::TICK) {}
 
 bool Bomb::update(const sf::Time &elapsed) {
     if(state == BombState::DONE) return false;

@@ -37,6 +37,10 @@ private:
     const unsigned int width, height;
     sf::RenderTarget *target;
     sf::View gameView;
+
+    sf::Color defaultExplosionColor = sf::Color::Red;
+
+    const sf::Color &getExplosionColor(const Bomb &bomb) const;
 };
 
 
