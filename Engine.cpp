@@ -69,10 +69,13 @@ void Engine::update(const sf::Time &elapsed) {
     }
     for (int i = 0; i < bombs.size(); ++i) {
         auto &bomb = bombs[i];
-        bomb->update(elapsed);
-        if(bomb->state == BombState::DONE) {
-            bombs.erase(bombs.begin() + i);
-            --i;
+        if(bomb->update(elapsed)) {
+            updateBomb(bomb.get());
+            if(bomb->state == BombState::DONE) {
+                map.removeBomb(bomb.get());
+                bombs.erase(bombs.begin() + i);
+                --i;
+            }
         }
     }
 }
@@ -92,4 +95,27 @@ bool Engine::updatePlayer(Player &player) {
         return false;
     else
         return moveEntity(player, player.pos + player.facing);
+}
+
+bool Engine::updateBomb(const Bomb *bomb) {
+    static const Direction dirs[4] = {UP, DOWN, LEFT, RIGHT};
+    if(bomb->oldRadius != bomb->radius && bomb->state == BombState::EXPLODING) {
+        for(const Direction &dir: dirs) {
+            sf::Vector2u pos(bomb->pos / 2u);
+            for (unsigned int i = 1; i <= bomb->radius; ++i) {
+                pos += dir;
+                if(isBlocking(pos))
+                    break;
+                if(i > bomb->oldRadius) {
+                    // Tile newly reached by explosion radius
+                    map.updateBomb(bomb, pos, i);
+                    // Detonate nearby bombs
+                    for(auto &b: bombs) {
+                        if(b->getPos() / 2u == pos)
+                            b->detonate();
+                    }
+                }
+            }
+        }
+    }
 }

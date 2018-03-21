@@ -9,6 +9,7 @@ Bomb::Bomb(const sf::Vector2u &pos) : Entity(pos), state(BombState::TICK) {}
 bool Bomb::update(const sf::Time &elapsed) {
     if(state == BombState::DONE) return false;
     bool changed = false;
+    oldRadius = radius;
     tick += elapsed;
     if(state == BombState::TICK) {
         if(tick >= tickDelay) {
@@ -21,15 +22,13 @@ bool Bomb::update(const sf::Time &elapsed) {
         }
     }
     if(state == BombState::EXPLODING) {
-        unsigned int oldRad(radius);
         radius = std::min(explosionMaxRadius, (unsigned int)(tick / explosionSpeed));
-        changed = changed || (oldRad != radius);
         if(tick > (float) explosionMaxRadius * explosionSpeed + explosionFinalDelay) {
             state = BombState::DONE;
             changed = true;
         }
     }
-    return changed;
+    return changed || oldRadius != radius;
 }
 
 void Bomb::detonate() {

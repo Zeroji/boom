@@ -79,4 +79,17 @@ void Renderer::render() {
         target->draw(bombSpr);
         target->draw(bombTxt);
     }
+
+    sf::RectangleShape xp;
+    xp.setSize(sf::Vector2f(.5f, .5f));
+    xp.setOrigin(-.25f, -.25f);
+    xp.setFillColor(sf::Color::Red);
+    for (unsigned int x = 0; x < width; ++x) {
+        for (unsigned int y = 0; y < height; ++y) {
+            if (map.getBombs(sf::Vector2u(x, y)).size() > 0) {
+                xp.setPosition(x, y);
+                target->draw(xp);
+            }
+        }
+    }
 }

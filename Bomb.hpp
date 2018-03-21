@@ -28,7 +28,7 @@ public:
 
     BombState state;
     float tickRatio=0;
-    unsigned int radius=0;
+    unsigned int radius=0, oldRadius=0;
 
 private:
     sf::Time tick=sf::Time::Zero;

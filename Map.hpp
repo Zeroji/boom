@@ -9,10 +9,15 @@
 #include <vector>
 #include <SFML/System/Vector2.hpp>
 #include "Tile.hpp"
+#include <map>
+
+class Bomb;
 
 class Map {
     struct TileData {
         Tile tile=VOID;
+        std::map<const Bomb*, unsigned int> explosions;
+        std::vector<const Bomb*> explosionVector;
     };
 
 public:
@@ -27,8 +32,15 @@ public:
 
     const unsigned int getHeight() const;
 
+    void updateBomb(const Bomb *, const sf::Vector2u &pos, const unsigned int &distance);
+    void removeBomb(const Bomb *);
+
+    const std::vector<const Bomb*> &getBombs(const sf::Vector2u &pos) const;
+
+    bool inBounds(const sf::Vector2u &pos) const;
 private:
     unsigned int width, height;
+    TileData &td(const unsigned int &x, const unsigned int &y);
     Tile &t(const unsigned int &x, const unsigned int &y);
     std::vector<std::vector<TileData>> tiles;
 };
