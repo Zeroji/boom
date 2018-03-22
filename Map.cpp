@@ -73,7 +73,7 @@ void Map::updateBomb(const Bomb *bomb, const sf::Vector2u &pos, const unsigned i
     data.explosionVector.clear();
     for(auto it: data.explosions)
         data.explosionVector.emplace_back(it.first);
-    std::sort(data.explosionVector.begin(), data.explosionVector.end(), [data](const Bomb *a, const Bomb *b) { return data.explosions.at(a) - data.explosions.at(b); });
+    std::sort(data.explosionVector.begin(), data.explosionVector.end(), [data](const Bomb *a, const Bomb *b) { return data.explosions.at(a) > data.explosions.at(b); });
 }
 
 void Map::removeBomb(const Bomb *bomb) {

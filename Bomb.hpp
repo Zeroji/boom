@@ -13,8 +13,7 @@ enum class BombState { TICK, EXPLODING, DONE };
 
 class Bomb : public Entity {
 public:
-    explicit Bomb(const sf::Vector2u &pos);
-    explicit Bomb(const sf::Vector2u &pos, const Player *player);
+    explicit Bomb(const sf::Vector2u &pos, const Player *player = nullptr);
 
     /**
      * Updates the bomb
@@ -28,7 +27,7 @@ public:
      */
     void detonate();
 
-    BombState state;
+    BombState state, oldState;
     float tickRatio=0;
     unsigned int radius=0, oldRadius=0;
     const Player *player;

@@ -99,6 +99,8 @@ bool Engine::updatePlayer(Player &player) {
 
 bool Engine::updateBomb(const Bomb *bomb) {
     static const Direction dirs[4] = {UP, DOWN, LEFT, RIGHT};
+    if(bomb->oldState == BombState::TICK && bomb->state == BombState::EXPLODING)
+        map.updateBomb(bomb, bomb->pos / 2u, 0);
     if(bomb->oldRadius != bomb->radius && bomb->state == BombState::EXPLODING) {
         for(const Direction &dir: dirs) {
             sf::Vector2u pos(bomb->pos / 2u);
