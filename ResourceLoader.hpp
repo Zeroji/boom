@@ -15,7 +15,7 @@ public:
     const sf::Texture player;
     const sf::Texture arrow;
     const sf::Texture bomb;
-    const sf::Texture beams;
+    const sf::Texture explosion;
     const sf::Font font;
 
     explicit ResourceLoader(const std::string &path);

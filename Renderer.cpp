@@ -40,7 +40,7 @@ Renderer::Renderer(const ResourceLoader &res, Engine *engine, sf::RenderTarget *
     bombSpr.setTexture(res.bomb);
     bombSpr.setScale(pxScale);
 
-    explosion.setTexture(res.beams);
+    explosion.setTexture(res.explosion);
     explosion.setScale(pxScale);
     explosion.setColor(sf::Color::Red);
 }
