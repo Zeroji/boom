@@ -6,15 +6,18 @@
 #include "Renderer.hpp"
 #include "Player.hpp"
 
+const sf::Vector2f ONE(1.f, 1.f);
+
 Renderer::Renderer(const ResourceLoader &res, Engine *engine, sf::RenderTarget *target, const std::vector<PlayerSkin*> &skins) :
+        px(16), pxScale(ONE / (float) px), pxOrigin(px / 2.f, px / 2.f),
         res(res), engine(engine), target(target), skins(skins), map(engine->getMap()),
-        width(map.getWidth()), height(map.getHeight())
+        width(map.getWidth()), height(map.getHeight()), defaultExplosionColor(sf::Color::Red)
 {
     // View is technically one pixel per tile, scaled by viewport
     gameView.reset(sf::FloatRect(0, 0, width, height));
     sf::Vector2f size(target->getSize());
-    float borderLeft = (size.x - width * tileSize) / 2.f, borderTop = (size.y - height * tileSize) / 2.f;
-    gameView.setViewport(sf::FloatRect(borderLeft / size.x, borderTop / size.y, width *tileSize / size.x, height * tileSize / size.y));
+    float borderLeft = (size.x - width * px) / 2.f, borderTop = (size.y - height * px) / 2.f;
+    gameView.setViewport(sf::FloatRect(borderLeft / size.x, borderTop / size.y, width *px / size.x, height * px / size.y));
 
     // Initialize vertex array and fill positions (tiles won't move)
     vertices.setPrimitiveType(sf::Quads);
@@ -31,20 +34,15 @@ Renderer::Renderer(const ResourceLoader &res, Engine *engine, sf::RenderTarget *
 
     // Initialize player view
     playerSpr.setTexture(res.player);
-    const sf::Vector2f pTSize(res.player.getSize());
-    playerSpr.setScale(1 / pTSize.x, 1 / pTSize.y);
-    playerSpr.setOrigin(pTSize / 2.f);
+    playerSpr.setScale(pxScale);
+    playerSpr.setOrigin(pxOrigin);
 
     bombSpr.setTexture(res.bomb);
-    const sf::Vector2f bTSize(res.bomb.getSize());
-    bombSpr.setScale(1 / bTSize.x, 1 / bTSize.y);
-    bombSpr.setOrigin(bTSize / 2.f);
+    bombSpr.setScale(pxScale);
 
-    bombTxt.setFont(res.font);
-    bombTxt.setCharacterSize(17);
-    bombTxt.setScale(sf::Vector2f(1/16.f, 1/16.f));
-    bombTxt.setFillColor(sf::Color::Green);
-
+    explosion.setTexture(res.beams);
+    explosion.setScale(pxScale);
+    explosion.setColor(sf::Color::Red);
 }
 
 void Renderer::render() {
@@ -55,10 +53,10 @@ void Renderer::render() {
         for (unsigned int y = 0; y < height; ++y) {
             unsigned int i = (y * width + x) * 4;
             auto t = (unsigned int) map(x, y);
-            vertices[i+0].texCoords = sf::Vector2f(t*tileSize, 0);
-            vertices[i+1].texCoords = sf::Vector2f(t*tileSize+tileSize, 0);
-            vertices[i+2].texCoords = sf::Vector2f(t*tileSize+tileSize, tileSize);
-            vertices[i+3].texCoords = sf::Vector2f(t*tileSize, tileSize);
+            vertices[i+0].texCoords = sf::Vector2f(t*px, 0);
+            vertices[i+1].texCoords = sf::Vector2f(t*px+px, 0);
+            vertices[i+2].texCoords = sf::Vector2f(t*px+px, px);
+            vertices[i+3].texCoords = sf::Vector2f(t*px, px);
         }
     }
 
@@ -67,31 +65,47 @@ void Renderer::render() {
     for(const Player &p: engine->getPlayers()) {
         skins[p.id]->applyTo(playerSpr, p.facing);
         // Add 1, 1 to account for origin translation, divide to account for half tiles
-        playerSpr.setPosition((p.getIPos() + sf::Vector2f(1, 1)) / 2.f);
+        playerSpr.setPosition((p.getIPos() + ONE) / 2.f);
         target->draw(playerSpr);
     }
 
-    for(const auto &b: engine->getBombs()) {
-        bombSpr.setPosition((b->getIPos() + sf::Vector2f(1, 1)) / 2.f);
-        bombTxt.setPosition(bombSpr.getPosition());
-        if(b->state == BombState::TICK) bombTxt.setString(std::to_string(b->tickRatio));
-        else bombTxt.setString(std::to_string(b->radius));
-        target->draw(bombSpr);
-        target->draw(bombTxt);
+    for(const auto &bomb: engine->getBombs()) {
+        if(bomb->state == BombState::TICK) {
+            bombSpr.setPosition(bomb->getIPos() / 2.f);
+            target->draw(bombSpr);
+        }
     }
 
-    sf::RectangleShape xp;
-    xp.setSize(sf::Vector2f(.5f, .5f));
-    xp.setOrigin(-.25f, -.25f);
-    xp.setFillColor(sf::Color::Red);
+    // Draw bomb explosions
     for (unsigned int x = 0; x < width; ++x) {
         for (unsigned int y = 0; y < height; ++y) {
             auto const &bombs = map.getBombs(sf::Vector2u(x, y));
             if (!bombs.empty()) {
-                xp.setPosition(x, y);
+                explosion.setPosition(x, y);
                 for(auto const &bomb: bombs) {
-                    xp.setFillColor(getExplosionColor(*bomb));
-                    target->draw(xp);
+                    unsigned int k = 0;  // ID of texture to apply
+                    if(bomb->pos / 2u == sf::Vector2u(x, y)) k=15;
+                    else {
+                        /**
+                         * Takes a position in parameter
+                         * Returns true if that position contains an explosion from the same player
+                         */
+                        auto hasSameBomb = [this, bomb](unsigned int x, unsigned int y) -> bool {
+                            auto const &bs = map.getBombs(sf::Vector2u(x, y));
+                            for (auto const &b: bs)
+                                if (b->player == bomb->player)
+                                    return true;
+                            return false;
+                        };
+                        // Change texture ID according to nearby bombs of same color
+                        if (hasSameBomb(x + 1, y)) k += 1;
+                        if (hasSameBomb(x, y + 1)) k += 2;
+                        if (hasSameBomb(x - 1, y)) k += 4;
+                        if (hasSameBomb(x, y - 1)) k += 8;
+                    }
+                    explosion.setTextureRect(sf::IntRect(k*16, 0, 16, 16));
+                    explosion.setColor(getExplosionColor(*bomb));
+                    target->draw(explosion);
                 }
             }
         }

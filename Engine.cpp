@@ -21,6 +21,8 @@ bool Engine::isValid(const sf::Vector2u &entityPos) const {
     std::vector<sf::Vector2u> checks;
     for(const auto &player: players)
         if(player.getPos() == entityPos) return false;
+    for(const auto &bomb: bombs)
+        if(bomb->getPos() == entityPos) return false;
     checks.push_back(entityPos / 2u);
     if(entityPos.x % 2 == 1) checks.emplace_back(sf::Vector2u(entityPos.x / 2u + 1, entityPos.y / 2u));
     if(entityPos.y % 2 == 1) checks.emplace_back(entityPos.x / 2u, entityPos.y / 2u + 1);

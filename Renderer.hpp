@@ -25,11 +25,11 @@ public:
 private:
     const ResourceLoader &res;
 
-    const unsigned int tileSize = 16;
+    const unsigned int px;  // pixel art size (probably 16x16)
+    const sf::Vector2f pxScale, pxOrigin;
     sf::VertexArray vertices;
     sf::Sprite playerSpr;
     sf::Sprite bombSpr;
-    sf::Text bombTxt;
 
     Engine *engine;
     const Map &map;
@@ -38,7 +38,8 @@ private:
     sf::RenderTarget *target;
     sf::View gameView;
 
-    sf::Color defaultExplosionColor = sf::Color::Red;
+    sf::Sprite explosion;
+    sf::Color defaultExplosionColor;
 
     const sf::Color &getExplosionColor(const Bomb &bomb) const;
 };
