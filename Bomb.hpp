@@ -28,16 +28,16 @@ public:
     void detonate();
 
     BombState state, oldState;
-    float tickRatio=0;
-    unsigned int radius=0, oldRadius=0;
+    float tickRatio;
+    unsigned int radius, oldRadius;
     const Player *player;
 
 private:
-    sf::Time tick=sf::Time::Zero;
-    sf::Time tickDelay=sf::milliseconds(2000);
-    sf::Time explosionSpeed=sf::milliseconds(200);
-    sf::Time explosionFinalDelay=sf::milliseconds(1000);
-    unsigned int explosionMaxRadius=3;
+    sf::Time tick;
+    sf::Time tickDelay;
+    sf::Time explosionSpeed;
+    sf::Time explosionFinalDelay;
+    unsigned int explosionMaxRadius;
 };
 
 

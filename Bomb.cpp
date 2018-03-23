@@ -4,7 +4,11 @@
 
 #include "Bomb.hpp"
 
-Bomb::Bomb(const sf::Vector2u &pos, const Player *player) : Entity(pos), player(player), state(BombState::TICK), oldState(state) {}
+Bomb::Bomb(const sf::Vector2u &pos, const Player *player) :
+        Entity(pos), player(player), state(BombState::TICK), oldState(state),
+        tickRatio(0), radius(0), oldRadius(0), tick(sf::Time::Zero), explosionMaxRadius(3),
+        tickDelay(sf::milliseconds(1200)), explosionSpeed(sf::milliseconds(160)), explosionFinalDelay(sf::milliseconds(800))
+{}
 
 bool Bomb::update(const sf::Time &elapsed) {
     if(state == BombState::DONE) return false;
