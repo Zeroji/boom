@@ -52,10 +52,17 @@ void Engine::processInput(const unsigned int &playerId, const Control &control, 
     if(d != NONE) {
         // We have a (potential) direction update
         player.stop();
+        bool first = true;
+        player.facing2 = NONE;
         for(const Control &c: controls) {
             if(control::isDir(c)) {
-                player.move(control::toDir(c));
-                break;
+                if(first) {
+                    player.move(control::toDir(c));
+                    first = false;
+                } else {
+                    player.facing2 = control::toDir(c);
+                    break;
+                }
             }
         }
     }
@@ -95,8 +102,14 @@ bool Engine::updatePlayer(Player &player) {
         return false;
     if(player.cooldown < player.speed)
         return false;
-    else
-        return moveEntity(player, player.pos + player.facing);
+    else {
+        if(!moveEntity(player, player.pos + player.facing)) {
+            if(player.facing2 != NONE)
+                return moveEntity(player, player.pos + player.facing2);
+            return false;
+        }
+        return true;
+    }
 }
 
 bool Engine::updateBomb(const Bomb *bomb) {

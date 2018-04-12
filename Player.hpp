@@ -17,6 +17,7 @@ public:
 
     const unsigned int id;
     Direction facing = NONE;
+    Direction facing2 = NONE;
     bool moving;
 
 };
