@@ -21,6 +21,7 @@ public:
     bool moveEntity(Entity &entity, const sf::Vector2u &pos);
     bool updatePlayer(Player &player);
     bool updateBomb(const Bomb *bomb);
+    void apply(Player &player, const UpType &upgrade);
 
     const Map &getMap() const;
 

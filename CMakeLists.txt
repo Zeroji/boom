@@ -4,12 +4,12 @@ project(boom)
 set(CMAKE_CXX_STANDARD 11)
 
 # Cross-platform source files and libraries
-set(SOURCE_FILES main.cpp Map.cpp Map.hpp Tile.cpp Tile.hpp Engine.cpp Engine.hpp Client.cpp Client.hpp Renderer.cpp Renderer.hpp Entity.cpp Entity.hpp Player.cpp Player.hpp Direction.cpp Direction.hpp InputHandler.cpp InputHandler.hpp Control.cpp Control.hpp)
+set(SOURCE_FILES main.cpp Map.cpp Map.hpp Tile.cpp Tile.hpp Engine.cpp Engine.hpp Client.cpp Client.hpp Renderer.cpp Renderer.hpp Entity.cpp Entity.hpp Player.cpp Player.hpp Direction.cpp Direction.hpp InputHandler.cpp InputHandler.hpp Control.cpp Control.hpp PlayerSkin.cpp PlayerSkin.hpp PlayerMenu.cpp PlayerMenu.hpp ResourceLoader.cpp ResourceLoader.hpp Bomb.cpp Bomb.hpp Upgrade.cpp Upgrade.hpp)
 set(TARGET_LIBS sfml-graphics sfml-window sfml-system)
 
 # Linux client
 #set(CMAKE_SYSTEM_NAME Linux)
-add_executable(boom ${SOURCE_FILES} PlayerSkin.cpp PlayerSkin.hpp PlayerMenu.cpp PlayerMenu.hpp ResourceLoader.cpp ResourceLoader.hpp Bomb.cpp Bomb.hpp)
+add_executable(boom ${SOURCE_FILES})
 target_link_libraries(boom ${TARGET_LIBS})
 
 add_custom_command(TARGET boom POST_BUILD

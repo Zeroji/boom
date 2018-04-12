@@ -108,6 +108,15 @@ bool Engine::updatePlayer(Player &player) {
                 return moveEntity(player, player.pos + player.facing2);
             return false;
         }
+        // perform post-movement checks
+        const unsigned int x = player.pos.x, y = player.pos.y;
+        if(player.pos.x % 2 == 0 && player.pos.y % 2 == 0) {
+            const Upgrade *upgrade = map.getUpgrade(player.pos / 2u);
+            if(upgrade != nullptr) {
+                apply(player, upgrade->type);
+                map.removeUpgrade(player.pos / 2u);
+            }
+        }
         return true;
     }
 }
@@ -138,5 +147,14 @@ bool Engine::updateBomb(const Bomb *bomb) {
                 }
             }
         }
+    }
+}
+
+void Engine::apply(Player &player, const UpType &upgrade) {
+    switch (upgrade) {
+        case UpType::BOMB_COUNT:break;
+        case UpType::BOMB_RANGE:break;
+        case UpType::SPEED:break;
+        case UpType::SHIELD:break;
     }
 }

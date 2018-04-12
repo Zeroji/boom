@@ -63,6 +63,18 @@ Map::TileData &Map::td(const unsigned int &x, const unsigned int &y) {
     return tiles[x][y];
 }
 
+const Map::TileData &Map::td(const unsigned int &x, const unsigned int &y) const {
+    return tiles[x][y];
+}
+
+Map::TileData &Map::td(const sf::Vector2u &pos) {
+    return td(pos.x, pos.y);
+}
+
+const Map::TileData &Map::td(const sf::Vector2u &pos) const {
+    return td(pos.x, pos.y);
+}
+
 Tile &Map::t(const unsigned int &x, const unsigned int &y) {
     return td(x, y).tile;
 }
@@ -136,3 +148,11 @@ bool Map::breakTile(const sf::Vector2u &pos) {
     t(pos.x, pos.y) = Tile::VOID;
     return true;
 }
+
+const Upgrade *Map::getUpgrade(const sf::Vector2u &pos) const {
+    if(!tile::isSurface((*this)(pos)))
+        return nullptr;
+    return td(pos).upgrade.get();
+}
+
+void Map::removeUpgrade(const sf::Vector2u &pos) { td(pos).upgrade = nullptr; }

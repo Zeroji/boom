@@ -45,6 +45,9 @@ Renderer::Renderer(const ResourceLoader &res, Engine *engine, sf::RenderTarget *
     explosion.setColor(sf::Color::Red);
 }
 
+const std::map<UpType, sf::Color> upCol = {{UpType::BOMB_COUNT, sf::Color::Magenta}, {UpType::BOMB_RANGE, sf::Color::Red},
+                                           {UpType::SPEED, sf::Color::Green}, {UpType::SHIELD, sf::Color::Blue}};
+
 void Renderer::render() {
     target->setView(gameView);
 
@@ -61,6 +64,20 @@ void Renderer::render() {
     }
 
     target->draw(vertices, &res.tiles);
+
+    // Draw upgrades
+    for (unsigned int x = 0; x < width; ++x) {
+        for (unsigned int y = 0; y < height; ++y) {
+            const Upgrade *up = map.getUpgrade({x, y});
+            if(up != nullptr) {
+                sf::RectangleShape z;
+                z.setSize(sf::Vector2f(1, 1));
+                z.setPosition(x, y);
+                z.setFillColor(upCol.at(up->type));
+                target->draw(z);
+            }
+        }
+    }
 
     for(const Player &p: engine->getPlayers()) {
         skins[p.id]->applyTo(playerSpr, p.facing);

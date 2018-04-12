@@ -9,14 +9,17 @@
 #include <vector>
 #include <SFML/System/Vector2.hpp>
 #include "Tile.hpp"
+#include "Upgrade.hpp"
 #include <map>
 #include <random>
+#include <memory>
 
 class Bomb;
 
 class Map {
     struct TileData {
         Tile tile=Tile::VOID;
+        std::shared_ptr<Upgrade> upgrade=nullptr;
         std::map<const Bomb*, unsigned int> explosions;
         std::vector<const Bomb*> explosionVector;
     };
@@ -38,6 +41,9 @@ public:
 
     const std::vector<const Bomb*> &getBombs(const sf::Vector2u &pos) const;
 
+    const Upgrade *getUpgrade(const sf::Vector2u &pos) const;
+    void removeUpgrade(const sf::Vector2u &pos);
+
     bool inBounds(const sf::Vector2u &pos) const;
 
     sf::Vector2u getPlayerBase(unsigned int id);
@@ -46,7 +52,10 @@ public:
 
 private:
     unsigned int width, height;
+    TileData &td(const sf::Vector2u &pos);
     TileData &td(const unsigned int &x, const unsigned int &y);
+    const TileData &td(const sf::Vector2u &pos) const;
+    const TileData &td(const unsigned int &x, const unsigned int &y) const;
     Tile &t(const unsigned int &x, const unsigned int &y);
     std::vector<std::vector<TileData>> tiles;
 
