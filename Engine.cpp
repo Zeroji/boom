@@ -66,8 +66,15 @@ void Engine::processInput(const unsigned int &playerId, const Control &control, 
             }
         }
     }
-    if(control == Control::A && state) {
-        bombs.emplace_back(new Bomb(player.getLastEvenPos(), &player));
+    if(control == Control::A && state && player.bombCount > 0) {
+        bool place = true;
+        for(auto const &bomb: bombs)
+            if(bomb->getPos() == player.getLastEvenPos())
+                place = false;
+        if(place) {
+            bombs.emplace_back(new Bomb(player.getLastEvenPos(), &player));
+            --player.bombCount;
+        }
     }
 }
 
@@ -81,6 +88,7 @@ void Engine::update(const sf::Time &elapsed) {
         if(bomb->update(elapsed)) {
             updateBomb(bomb.get());
             if(bomb->state == BombState::DONE) {
+                players[bomb->player->id].bombCount++;
                 map.removeBomb(bomb.get());
                 bombs.erase(bombs.begin() + i);
                 --i;
@@ -152,9 +160,17 @@ bool Engine::updateBomb(const Bomb *bomb) {
 
 void Engine::apply(Player &player, const UpType &upgrade) {
     switch (upgrade) {
-        case UpType::BOMB_COUNT:break;
-        case UpType::BOMB_RANGE:break;
-        case UpType::SPEED:break;
-        case UpType::SHIELD:break;
+        case UpType::BOMB_COUNT:
+            ++player.bombCount;
+            break;
+        case UpType::BOMB_RANGE:
+            ++player.bombRange;
+            break;
+        case UpType::SPEED:
+            player.speed -= sf::milliseconds(10);
+            break;
+        case UpType::SHIELD:
+            player.shield = true;
+            break;
     }
 }

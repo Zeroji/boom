@@ -20,6 +20,9 @@ public:
     Direction facing2 = NONE;
     bool moving;
 
+    unsigned int bombCount;
+    unsigned int bombRange;
+    bool shield;
 };
 
 

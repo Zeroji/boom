@@ -27,6 +27,7 @@ ResourceLoader::ResourceLoader(const std::string &path) :
         arrow(loadTexture(path, "arrow.png")),
         bomb(loadTexture(path, "bomb.png")),
         explosion(loadTexture(path, "explosion.png")),
+        upgrades(loadTexture(path, "upgrades.png")),
         font(loadFont(path, "04b_30.ttf"))
 {
 }

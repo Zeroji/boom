@@ -5,7 +5,9 @@
 #ifndef BOOM_UPGRADE_HPP
 #define BOOM_UPGRADE_HPP
 
-enum class UpType {
+#include <cstdint>
+
+enum class UpType : uint8_t {
     BOMB_COUNT, BOMB_RANGE, SPEED, SHIELD
 };
 

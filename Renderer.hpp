@@ -41,6 +41,8 @@ private:
     sf::Sprite explosion;
     sf::Color defaultExplosionColor;
 
+    sf::Sprite upgrade;
+
     const sf::Color &getExplosionColor(const Bomb &bomb) const;
 };
 

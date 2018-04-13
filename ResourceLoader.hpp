@@ -16,6 +16,7 @@ public:
     const sf::Texture arrow;
     const sf::Texture bomb;
     const sf::Texture explosion;
+    const sf::Texture upgrades;
     const sf::Font font;
 
     explicit ResourceLoader(const std::string &path);

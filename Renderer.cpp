@@ -43,10 +43,10 @@ Renderer::Renderer(const ResourceLoader &res, Engine *engine, sf::RenderTarget *
     explosion.setTexture(res.explosion);
     explosion.setScale(pxScale);
     explosion.setColor(sf::Color::Red);
-}
 
-const std::map<UpType, sf::Color> upCol = {{UpType::BOMB_COUNT, sf::Color::Magenta}, {UpType::BOMB_RANGE, sf::Color::Red},
-                                           {UpType::SPEED, sf::Color::Green}, {UpType::SHIELD, sf::Color::Blue}};
+    upgrade.setTexture(res.upgrades);
+    upgrade.setScale(pxScale);
+}
 
 void Renderer::render() {
     target->setView(gameView);
@@ -70,11 +70,9 @@ void Renderer::render() {
         for (unsigned int y = 0; y < height; ++y) {
             const Upgrade *up = map.getUpgrade({x, y});
             if(up != nullptr) {
-                sf::RectangleShape z;
-                z.setSize(sf::Vector2f(1, 1));
-                z.setPosition(x, y);
-                z.setFillColor(upCol.at(up->type));
-                target->draw(z);
+                upgrade.setPosition(x, y);
+                upgrade.setTextureRect(sf::IntRect((int)up->type*16, 0, 16, 16));
+                target->draw(upgrade);
             }
         }
     }
