@@ -87,8 +87,10 @@ void Engine::update(const sf::Time &elapsed) {
         auto &bomb = bombs[i];
         if(bomb->update(elapsed)) {
             updateBomb(bomb.get());
-            if(bomb->state == BombState::DONE) {
+            if(bomb->oldState != BombState::EXPLODING && bomb->state == BombState::EXPLODING) {
+                // Make bomb usable again right after detonation
                 players[bomb->player->id].bombCount++;
+            } else if (bomb->state == BombState::DONE) {
                 map.removeBomb(bomb.get());
                 bombs.erase(bombs.begin() + i);
                 --i;

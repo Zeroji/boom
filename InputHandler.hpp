@@ -7,6 +7,7 @@
 
 
 #include <map>
+#include <vector>
 #include <SFML/Window/Event.hpp>
 
 #include "Control.hpp"
