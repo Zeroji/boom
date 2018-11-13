@@ -8,7 +8,7 @@ Player::Player(const sf::Vector2u &pos, const unsigned int &id) : Entity(pos), i
     bombCount = 3;
     bombRange = 1;
     shield = false;
-    speed = sf::milliseconds(80);
+    speed = sf::milliseconds(250/TSZ);
 }
 
 void Player::move(const Direction &dir) {

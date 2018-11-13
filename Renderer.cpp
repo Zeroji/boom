@@ -79,14 +79,14 @@ void Renderer::render() {
 
     for(const Player &p: engine->getPlayers()) {
         skins[p.id]->applyTo(playerSpr, p.facing);
-        // Add 1, 1 to account for origin translation, divide to account for half tiles
-        playerSpr.setPosition((p.getIPos() + ONE) / 2.f);
+        // Divide to account for tile fractions, then add (.5, .5) to account for origin translation
+        playerSpr.setPosition(p.getIPos() / (float)TSZ + ONE/2.f);
         target->draw(playerSpr);
     }
 
     for(const auto &bomb: engine->getBombs()) {
         if(bomb->state == BombState::TICK) {
-            bombSpr.setPosition(bomb->getIPos() / 2.f);
+            bombSpr.setPosition(bomb->getIPos() / (float)TSZ);
             target->draw(bombSpr);
         }
     }
@@ -99,7 +99,7 @@ void Renderer::render() {
                 explosion.setPosition(x, y);
                 for(auto const &bomb: bombs) {
                     unsigned int k = 0;  // ID of texture to apply
-                    if(bomb->pos / 2u == sf::Vector2u(x, y)) k=15;
+                    if(bomb->pos / TSZ == sf::Vector2u(x, y)) k=15;
                     else {
                         /**
                          * Takes a position in parameter

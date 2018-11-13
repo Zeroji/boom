@@ -91,7 +91,7 @@ void Map::updateBomb(const Bomb *bomb, const sf::Vector2u &pos, const unsigned i
 void Map::removeBomb(const Bomb *bomb) {
     static const Direction dirs[4] = {UP, DOWN, LEFT, RIGHT};
     for(const auto &dir: dirs) {
-        sf::Vector2u pos(bomb->pos / 2u);
+        sf::Vector2u pos(bomb->pos / TSZ);
         for (int i = 0; i < bomb->radius; ++i) {
             pos += dir;
             if(!inBounds(pos))
@@ -101,7 +101,7 @@ void Map::removeBomb(const Bomb *bomb) {
             data.explosionVector.erase(std::remove(data.explosionVector.begin(), data.explosionVector.end(), bomb), data.explosionVector.end());
         }
     }
-    sf::Vector2u pos(bomb->pos / 2u);
+    sf::Vector2u pos(bomb->pos / TSZ);
     TileData &data = td(pos.x, pos.y);
     data.explosions.erase(bomb);
     data.explosionVector.erase(std::remove(data.explosionVector.begin(), data.explosionVector.end(), bomb), data.explosionVector.end());

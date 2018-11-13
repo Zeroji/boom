@@ -6,11 +6,11 @@
 #include "Entity.hpp"
 #include "Engine.hpp"
 
-Entity::Entity(const sf::Vector2u &pos) : pos(pos), old(pos), lastEvenPos(pos), cooldown(sf::Time::Zero) {}
+Entity::Entity(const sf::Vector2u &pos) : pos(pos), old(pos), lastTiledPos(pos), cooldown(sf::Time::Zero) {}
 
 void Entity::moveTo(sf::Vector2u newPos) {
-    if(newPos.x % 2 == 0 && newPos.y % 2 == 0)
-        lastEvenPos = newPos;
+    if(newPos.x % TSZ == 0 && newPos.y % TSZ == 0)
+        lastTiledPos = newPos;
     old = pos;
     pos = newPos;
     cooldown = sf::Time::Zero;
@@ -33,6 +33,6 @@ sf::Vector2f Entity::getIPos() const {
     }
 }
 
-const sf::Vector2u &Entity::getLastEvenPos() const {
-    return lastEvenPos;
+const sf::Vector2u &Entity::getLastTiledPos() const {
+    return lastTiledPos;
 }

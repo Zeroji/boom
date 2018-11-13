@@ -7,6 +7,10 @@
 
 #include <SFML/System.hpp>
 
+// Tile fraction size, i.e. how precisely can you stand between two tiles
+// 1u is full tiles, 2u is half-tiles (legacy default)
+#define TSZ 4u
+
 class Entity {
 public:
     explicit Entity(const sf::Vector2u &pos);
@@ -35,10 +39,10 @@ public:
      * Return entity last even (full-tile) position
      * @return Last even position
      */
-    const sf::Vector2u &getLastEvenPos() const;
+    const sf::Vector2u &getLastTiledPos() const;
 
 public:
-    sf::Vector2u old, pos, lastEvenPos;
+    sf::Vector2u old, pos, lastTiledPos;
     sf::Time speed;
     sf::Time cooldown;
 };

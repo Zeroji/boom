@@ -8,7 +8,7 @@
 Engine::Engine(const unsigned int &mapWidth, const unsigned int &mapHeight, const unsigned int &playerCount):
         map(mapWidth, mapHeight), playerCount(playerCount) {
     for (unsigned int i = 0; i < playerCount; ++i) {
-        Player player(map.getPlayerBase(i) * 2u, i);
+        Player player(map.getPlayerBase(i) * TSZ, i);
         players.emplace_back(player);
     }
 }
@@ -23,10 +23,10 @@ bool Engine::isValid(const sf::Vector2u &entityPos) const {
         if(player.getPos() == entityPos) return false;
     for(const auto &bomb: bombs)
         if(bomb->getPos() == entityPos) return false;
-    checks.push_back(entityPos / 2u);
-    if(entityPos.x % 2 == 1) checks.emplace_back(sf::Vector2u(entityPos.x / 2u + 1, entityPos.y / 2u));
-    if(entityPos.y % 2 == 1) checks.emplace_back(entityPos.x / 2u, entityPos.y / 2u + 1);
-    if(entityPos.x % 2 == 1 && entityPos.y % 2 == 1) checks.emplace_back(entityPos.x / 2u + 1, entityPos.y / 2u + 1);
+    checks.push_back(entityPos / TSZ);
+    if(entityPos.x % TSZ > 0) checks.emplace_back(sf::Vector2u(entityPos.x / TSZ + 1, entityPos.y / TSZ));
+    if(entityPos.y % TSZ > 0) checks.emplace_back(entityPos.x / TSZ, entityPos.y / TSZ + 1);
+    if(entityPos.x % TSZ > 0 && entityPos.y % TSZ > 0) checks.emplace_back(entityPos.x / TSZ + 1, entityPos.y / TSZ + 1);
     bool surface = false;
     for(auto &pos: checks) {
         if (isBlocking(pos))
@@ -69,10 +69,10 @@ void Engine::processInput(const unsigned int &playerId, const Control &control, 
     if(control == Control::A && state && player.bombCount > 0) {
         bool place = true;
         for(auto const &bomb: bombs)
-            if(bomb->getPos() == player.getLastEvenPos())
+            if(bomb->getPos() == player.getLastTiledPos())
                 place = false;
         if(place) {
-            bombs.emplace_back(new Bomb(player.getLastEvenPos(), &player));
+            bombs.emplace_back(new Bomb(player.getLastTiledPos(), &player));
             --player.bombCount;
         }
     }
@@ -120,11 +120,11 @@ bool Engine::updatePlayer(Player &player) {
         }
         // perform post-movement checks
         const unsigned int x = player.pos.x, y = player.pos.y;
-        if(player.pos.x % 2 == 0 && player.pos.y % 2 == 0) {
-            const Upgrade *upgrade = map.getUpgrade(player.pos / 2u);
+        if(player.pos.x % TSZ == 0 && player.pos.y % TSZ == 0) {
+            const Upgrade *upgrade = map.getUpgrade(player.pos / TSZ);
             if(upgrade != nullptr) {
                 apply(player, upgrade->type);
-                map.removeUpgrade(player.pos / 2u);
+                map.removeUpgrade(player.pos / TSZ);
             }
         }
         return true;
@@ -134,10 +134,10 @@ bool Engine::updatePlayer(Player &player) {
 bool Engine::updateBomb(const Bomb *bomb) {
     static const Direction dirs[4] = {UP, DOWN, LEFT, RIGHT};
     if(bomb->oldState == BombState::TICK && bomb->state == BombState::EXPLODING)
-        map.updateBomb(bomb, bomb->pos / 2u, 0);
+        map.updateBomb(bomb, bomb->pos / TSZ, 0);
     if(bomb->oldRadius != bomb->radius && bomb->state == BombState::EXPLODING) {
         for(const Direction &dir: dirs) {
-            sf::Vector2u pos(bomb->pos / 2u);
+            sf::Vector2u pos(bomb->pos / TSZ);
             for (unsigned int i = 1; i <= bomb->radius; ++i) {
                 pos += dir;
                 if(isBlocking(pos) && !isBreakable(pos))
@@ -151,7 +151,7 @@ bool Engine::updateBomb(const Bomb *bomb) {
                     map.updateBomb(bomb, pos, i);
                     // Detonate nearby bombs
                     for(auto &b: bombs) {
-                        if(b->getPos() / 2u == pos)
+                        if(b->getPos() / TSZ == pos)
                             b->detonate();
                     }
                 }
