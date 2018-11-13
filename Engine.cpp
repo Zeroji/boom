@@ -114,9 +114,18 @@ bool Engine::updatePlayer(Player &player) {
         return false;
     else {
         if(!moveEntity(player, player.pos + player.facing)) {
-            if(player.facing2 != NONE)
-                return moveEntity(player, player.pos + player.facing2);
-            return false;
+            bool moved = false;
+            // If player can't move forward, check to their left/right for valid spots forward
+            const Direction forward = player.facing, left = forward - 1, right = forward + 1;
+            if(isValid(player.pos >> left) && isValid((player.pos >> left) + forward)) {
+                moved |= moveEntity(player, player.pos + left);
+            } else if(isValid(player.pos >> right) && isValid((player.pos >> right) + forward)) {
+                moved |= moveEntity(player, player.pos + right);
+            }
+            if(!moved  && player.facing2 != NONE)
+                moved |= moveEntity(player, player.pos + player.facing2);
+            if(!moved)
+                return false;
         }
         // perform post-movement checks
         const unsigned int x = player.pos.x, y = player.pos.y;

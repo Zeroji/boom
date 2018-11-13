@@ -6,6 +6,7 @@
 #define BOOM_ENTITY_HPP
 
 #include <SFML/System.hpp>
+#include "Direction.hpp"
 
 // Tile fraction size, i.e. how precisely can you stand between two tiles
 // 1u is full tiles, 2u is half-tiles (legacy default)
@@ -47,5 +48,12 @@ public:
     sf::Time cooldown;
 };
 
+/**
+ * Shift a position in a direction until it's grid-aligned (on that axis)
+ * @param pos The original position
+ * @param dir The shift direction
+ * @return The grid-aligned position
+ */
+sf::Vector2u operator>>(const sf::Vector2u &pos, const Direction &dir);
 
 #endif //BOOM_ENTITY_HPP

@@ -36,3 +36,11 @@ sf::Vector2f Entity::getIPos() const {
 const sf::Vector2u &Entity::getLastTiledPos() const {
     return lastTiledPos;
 }
+
+sf::Vector2u operator>>(const sf::Vector2u &pos, const Direction &dir) {
+    sf::Vector2u res(pos);
+    while(((dir == LEFT || dir == RIGHT) && res.x % TSZ != 0)
+          || ((dir == UP || dir == DOWN) && res.y % TSZ != 0))
+        res += dir;
+    return res;
+}
