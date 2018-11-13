@@ -20,3 +20,48 @@ sf::Vector2u &operator+=(sf::Vector2u &pos, const Direction &dir) {
     }
     return pos;
 }
+
+Direction operator+(const Direction &dir, const int &rotation) {
+    auto rot = static_cast<int8_t>(rotation % 4);
+    auto direction = static_cast<int8_t>(dir);
+    direction += rot;
+    if(direction < 0) direction += 4;
+    if(direction > 3) direction -= 4;
+    return static_cast<Direction>(direction);
+}
+
+Direction operator-(const Direction &dir, const int &rotation) {
+    return dir + (-rotation);
+}
+
+Direction &operator+=(Direction &dir, const int &rotation) {
+    dir = dir + rotation;
+    return dir;
+}
+
+Direction &operator-=(Direction &dir, const int &rotation) {
+    dir += (-rotation);
+    return dir;
+}
+
+Direction &operator++(Direction &dir) {
+    dir += 1;
+    return dir;
+}
+
+Direction &operator--(Direction &dir) {
+    dir -= 1;
+    return dir;
+}
+
+const Direction operator++(Direction &dir, int) {
+    Direction ret(dir);
+    ++dir;
+    return ret;
+}
+
+const Direction operator--(Direction &dir, int) {
+    Direction ret(dir);
+    --dir;
+    return ret;
+}
