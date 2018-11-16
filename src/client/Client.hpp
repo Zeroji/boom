@@ -6,11 +6,11 @@
 #define BOOM_CLIENT_HPP
 
 #include <SFML/Graphics.hpp>
-#include "Engine.hpp"
-#include "Renderer.hpp"
+#include "core/Engine.hpp"
 #include "InputHandler.hpp"
 #include "PlayerMenu.hpp"
 #include "PlayerSkin.hpp"
+#include "Renderer.hpp"
 #include "ResourceLoader.hpp"
 
 enum class Control : int8_t;

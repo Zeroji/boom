@@ -7,7 +7,6 @@
 
 
 #include <SFML/System/Vector2.hpp>
-#include <SFML/Window/Keyboard.hpp>
 
 /**
  * Lists the different directions, NONE should not be a stored value

@@ -4,12 +4,15 @@ project(boom)
 set(CMAKE_CXX_STANDARD 11)
 
 # Cross-platform source files and libraries
-set(SOURCE_FILES main.cpp Map.cpp Map.hpp Tile.cpp Tile.hpp Engine.cpp Engine.hpp Client.cpp Client.hpp Renderer.cpp Renderer.hpp Entity.cpp Entity.hpp Player.cpp Player.hpp Direction.cpp Direction.hpp InputHandler.cpp InputHandler.hpp Control.cpp Control.hpp PlayerSkin.cpp PlayerSkin.hpp PlayerMenu.cpp PlayerMenu.hpp ResourceLoader.cpp ResourceLoader.hpp Bomb.cpp Bomb.hpp Upgrade.cpp Upgrade.hpp)
+
+include_directories(src)
+file(GLOB COMMON_SOURCE_FILES src/core/*.cpp)
+file(GLOB CLIENT_SOURCE_FILES src/client/*.cpp)
+
 set(TARGET_LIBS sfml-graphics sfml-window sfml-system)
 
 # Linux client
-#set(CMAKE_SYSTEM_NAME Linux)
-add_executable(boom ${SOURCE_FILES})
+add_executable(boom ${COMMON_SOURCE_FILES} ${CLIENT_SOURCE_FILES})
 target_link_libraries(boom ${TARGET_LIBS})
 
 add_custom_command(TARGET boom POST_BUILD
@@ -17,7 +20,7 @@ add_custom_command(TARGET boom POST_BUILD
         ${CMAKE_SOURCE_DIR}/res ${PROJECT_BINARY_DIR}/res)
 
 # Windows client
-add_executable(boom.exe ${SOURCE_FILES})
+add_executable(boom.exe ${COMMON_SOURCE_FILES} ${CLIENT_SOURCE_FILES})
 
 set(TARGET_LIBS_WIN_ONLY freetype jpeg opengl32 winmm gdi32 ws2_32)
 foreach(lib ${TARGET_LIBS})

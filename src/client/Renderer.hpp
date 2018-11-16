@@ -7,10 +7,10 @@
 
 
 #include <SFML/Graphics.hpp>
-#include "Engine.hpp"
-#include "Player.hpp"
-#include "ResourceLoader.hpp"
+#include "core/Engine.hpp"
+#include "core/Player.hpp"
 #include "PlayerSkin.hpp"
+#include "ResourceLoader.hpp"
 
 /**
  * Draws the state of a game engine to a window

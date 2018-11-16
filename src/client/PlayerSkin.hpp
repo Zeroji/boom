@@ -5,10 +5,10 @@
 #ifndef BOOM_PLAYERSKIN_HPP
 #define BOOM_PLAYERSKIN_HPP
 
-#include <SFML/Graphics/Color.hpp>
 #include <vector>
+#include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Sprite.hpp>
-#include "Direction.hpp"
+#include "core/Direction.hpp"
 
 class PlayerSkin {
 public:

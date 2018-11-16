@@ -3,8 +3,8 @@
 //
 
 #include <iostream>
+#include "core/Player.hpp"
 #include "Renderer.hpp"
-#include "Player.hpp"
 
 const sf::Vector2f ONE(1.f, 1.f);
 

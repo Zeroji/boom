@@ -7,9 +7,9 @@
 
 
 #include <SFML/Graphics.hpp>
+#include "core/Control.hpp"
 #include "PlayerSkin.hpp"
 #include "ResourceLoader.hpp"
-#include "Control.hpp"
 
 enum class MenuState { NAME, COLOR, LEAVE, READY };
 
